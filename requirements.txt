@@ -1,6 +1,4 @@
-git+git://github.com/nccr-itmo/FEDOT.git@8dab3faaa69f9a9cd2ce383039048376ac84df5b
-fedot==0.3.1
-pandas>=1.1.0
+fedot==0.4.1
 numpy
 seaborn
 matplotlib
