@@ -1,0 +1,27 @@
+{
+	"total_pipeline_operations": [
+		"adareg"
+	],
+	"depth": 1,
+	"nodes": [
+		{
+			"operation_id": 0,
+			"operation_type": "adareg",
+			"operation_name": "MultiOutputRegressor",
+			"custom_params": {
+				"learning_rate": 0.17573017773712205,
+				"loss": "square",
+				"n_estimators": 100
+			},
+			"params": {
+				"learning_rate": 0.17573017773712205,
+				"loss": "square",
+				"n_estimators": 100
+			},
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_0.pkl",
+			"rating": null
+		}
+	],
+	"descriptive_id": "/n_adareg_{'learning_rate': 0.17573017773712205, 'loss': 'square', 'n_estimators': 100}"
+}

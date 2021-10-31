@@ -1,0 +1,46 @@
+{
+	"total_pipeline_operations": [
+		"poly_features",
+		"knnreg"
+	],
+	"depth": 2,
+	"nodes": [
+		{
+			"operation_id": 1,
+			"operation_type": "poly_features",
+			"operation_name": "PolyFeaturesImplementation",
+			"custom_params": {
+				"degree": 2,
+				"interaction_only": false
+			},
+			"params": {
+				"degree": 2,
+				"interaction_only": false
+			},
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_1.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 0,
+			"operation_type": "knnreg",
+			"operation_name": "FedotKnnRegImplementation",
+			"custom_params": {
+				"n_neighbors": 40,
+				"p": 2,
+				"weights": "uniform"
+			},
+			"params": {
+				"n_neighbors": 40,
+				"p": 2,
+				"weights": "uniform"
+			},
+			"nodes_from": [
+				1
+			],
+			"fitted_operation_path": "fitted_operations\\operation_0.pkl",
+			"rating": null
+		}
+	],
+	"descriptive_id": "(/n_poly_features_{'degree': 2, 'interaction_only': False};)/n_knnreg_{'n_neighbors': 40, 'p': 2, 'weights': 'uniform'}"
+}

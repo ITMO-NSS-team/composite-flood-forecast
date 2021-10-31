@@ -1,0 +1,75 @@
+{
+	"total_pipeline_operations": [
+		"ransac_non_lin_reg",
+		"poly_features",
+		"xgbreg"
+	],
+	"depth": 3,
+	"nodes": [
+		{
+			"operation_id": 2,
+			"operation_type": "ransac_non_lin_reg",
+			"operation_name": "NonLinearRegRANSACImplementation",
+			"custom_params": {
+				"min_samples": 0.7599896024396178,
+				"residual_threshold": 1000.0,
+				"max_trials": 328.57567701702135,
+				"max_skips": 234317.45238216416
+			},
+			"params": {
+				"min_samples": 0.7599896024396178,
+				"residual_threshold": 1000.0,
+				"max_trials": 328.57567701702135,
+				"max_skips": 234317.45238216416
+			},
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_2.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 1,
+			"operation_type": "poly_features",
+			"operation_name": "PolyFeaturesImplementation",
+			"custom_params": {
+				"degree": 3,
+				"interaction_only": true
+			},
+			"params": {
+				"degree": 3,
+				"interaction_only": true
+			},
+			"nodes_from": [
+				2
+			],
+			"fitted_operation_path": "fitted_operations\\operation_1.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 0,
+			"operation_type": "xgbreg",
+			"operation_name": "MultiOutputRegressor",
+			"custom_params": {
+				"learning_rate": 0.5,
+				"max_depth": 7,
+				"min_child_weight": 6,
+				"n_estimators": 100,
+				"objective": "reg:squarederror",
+				"subsample": 0.2
+			},
+			"params": {
+				"learning_rate": 0.5,
+				"max_depth": 7,
+				"min_child_weight": 6,
+				"n_estimators": 100,
+				"objective": "reg:squarederror",
+				"subsample": 0.2
+			},
+			"nodes_from": [
+				1
+			],
+			"fitted_operation_path": "fitted_operations\\operation_0.pkl",
+			"rating": null
+		}
+	],
+	"descriptive_id": "((/n_ransac_non_lin_reg_{'min_samples': 0.7599896024396178, 'residual_threshold': 1000.0, 'max_trials': 328.57567701702135, 'max_skips': 234317.45238216416};)/n_poly_features_{'degree': 3, 'interaction_only': True};)/n_xgbreg_{'learning_rate': 0.5, 'max_depth': 7, 'min_child_weight': 6, 'n_estimators': 100, 'objective': 'reg:squarederror', 'subsample': 0.2}"
+}

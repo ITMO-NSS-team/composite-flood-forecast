@@ -1,0 +1,115 @@
+{
+	"total_pipeline_operations": [
+		"scaling",
+		"xgbreg",
+		"decompose",
+		"adareg",
+		"lgbmreg"
+	],
+	"depth": 5,
+	"nodes": [
+		{
+			"operation_id": 2,
+			"operation_type": "scaling",
+			"operation_name": "ScalingImplementation",
+			"custom_params": "default_params",
+			"params": "default_params",
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_2.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 1,
+			"operation_type": "xgbreg",
+			"operation_name": "MultiOutputRegressor",
+			"custom_params": {
+				"learning_rate": 0.5,
+				"max_depth": 6,
+				"min_child_weight": 16,
+				"n_estimators": 100,
+				"objective": "reg:squarederror",
+				"subsample": 0.45
+			},
+			"params": {
+				"learning_rate": 0.5,
+				"max_depth": 6,
+				"min_child_weight": 16,
+				"n_estimators": 100,
+				"objective": "reg:squarederror",
+				"subsample": 0.45
+			},
+			"nodes_from": [
+				2
+			],
+			"fitted_operation_path": "fitted_operations\\operation_1.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 4,
+			"operation_type": "decompose",
+			"operation_name": "DecomposerRegImplementation",
+			"custom_params": "default_params",
+			"params": "default_params",
+			"nodes_from": [
+				1,
+				2
+			],
+			"fitted_operation_path": "fitted_operations\\operation_4.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 3,
+			"operation_type": "adareg",
+			"operation_name": "MultiOutputRegressor",
+			"custom_params": {
+				"learning_rate": 0.23319274437793358,
+				"loss": "exponential",
+				"n_estimators": 100
+			},
+			"params": {
+				"learning_rate": 0.23319274437793358,
+				"loss": "exponential",
+				"n_estimators": 100
+			},
+			"nodes_from": [
+				4
+			],
+			"fitted_operation_path": "fitted_operations\\operation_3.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 0,
+			"operation_type": "lgbmreg",
+			"operation_name": "MultiOutputRegressor",
+			"custom_params": {
+				"num_leaves": 218,
+				"colsample_bytree": 0.6546105616359248,
+				"subsample": 0.9061735441156509,
+				"subsample_freq": 10,
+				"learning_rate": 0.021130985017716406,
+				"n_estimators": 3000,
+				"verbose": -1,
+				"lambda_l1": 4.628436740343767,
+				"lambda_l2": 9.05181403605808
+			},
+			"params": {
+				"num_leaves": 218,
+				"colsample_bytree": 0.6546105616359248,
+				"subsample": 0.9061735441156509,
+				"subsample_freq": 10,
+				"learning_rate": 0.021130985017716406,
+				"n_estimators": 3000,
+				"verbose": -1,
+				"lambda_l1": 4.628436740343767,
+				"lambda_l2": 9.05181403605808
+			},
+			"nodes_from": [
+				1,
+				3
+			],
+			"fitted_operation_path": "fitted_operations\\operation_0.pkl",
+			"rating": null
+		}
+	],
+	"descriptive_id": "((((/n_scaling_default_params;)/n_xgbreg_{'learning_rate': 0.5, 'max_depth': 6, 'min_child_weight': 16, 'n_estimators': 100, 'objective': 'reg:squarederror', 'subsample': 0.45};;/n_scaling_default_params;)/n_decompose_default_params;)/n_adareg_{'learning_rate': 0.23319274437793358, 'loss': 'exponential', 'n_estimators': 100};;(/n_scaling_default_params;)/n_xgbreg_{'learning_rate': 0.5, 'max_depth': 6, 'min_child_weight': 16, 'n_estimators': 100, 'objective': 'reg:squarederror', 'subsample': 0.45};)/n_lgbmreg_{'num_leaves': 218, 'colsample_bytree': 0.6546105616359248, 'subsample': 0.9061735441156509, 'subsample_freq': 10, 'learning_rate': 0.021130985017716406, 'n_estimators': 3000, 'verbose': -1, 'lambda_l1': 4.628436740343767, 'lambda_l2': 9.05181403605808}"
+}

@@ -1,0 +1,75 @@
+{
+	"total_pipeline_operations": [
+		"pca",
+		"ransac_lin_reg",
+		"xgbreg"
+	],
+	"depth": 3,
+	"nodes": [
+		{
+			"operation_id": 2,
+			"operation_type": "pca",
+			"operation_name": "PCAImplementation",
+			"custom_params": {
+				"n_components": 0.37398083219082223,
+				"svd_solver": "full"
+			},
+			"params": {
+				"n_components": 0.37398083219082223,
+				"svd_solver": "full"
+			},
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_2.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 1,
+			"operation_type": "ransac_lin_reg",
+			"operation_name": "LinearRegRANSACImplementation",
+			"custom_params": {
+				"min_samples": 0.7568984604061127,
+				"residual_threshold": 1024.0,
+				"max_trials": 247.37141912497367,
+				"max_skips": 474399.67843442917
+			},
+			"params": {
+				"min_samples": 0.7568984604061127,
+				"residual_threshold": 1024.0,
+				"max_trials": 247.37141912497367,
+				"max_skips": 474399.67843442917
+			},
+			"nodes_from": [
+				2
+			],
+			"fitted_operation_path": "fitted_operations\\operation_1.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 0,
+			"operation_type": "xgbreg",
+			"operation_name": "MultiOutputRegressor",
+			"custom_params": {
+				"learning_rate": 0.1,
+				"max_depth": 4,
+				"min_child_weight": 17,
+				"n_estimators": 100,
+				"objective": "reg:squarederror",
+				"subsample": 0.8500000000000001
+			},
+			"params": {
+				"learning_rate": 0.1,
+				"max_depth": 4,
+				"min_child_weight": 17,
+				"n_estimators": 100,
+				"objective": "reg:squarederror",
+				"subsample": 0.8500000000000001
+			},
+			"nodes_from": [
+				1
+			],
+			"fitted_operation_path": "fitted_operations\\operation_0.pkl",
+			"rating": null
+		}
+	],
+	"descriptive_id": "((/n_pca_{'n_components': 0.37398083219082223, 'svd_solver': 'full'};)/n_ransac_lin_reg_{'min_samples': 0.7568984604061127, 'residual_threshold': 1024.0, 'max_trials': 247.37141912497367, 'max_skips': 474399.67843442917};)/n_xgbreg_{'learning_rate': 0.1, 'max_depth': 4, 'min_child_weight': 17, 'n_estimators': 100, 'objective': 'reg:squarederror', 'subsample': 0.8500000000000001}"
+}

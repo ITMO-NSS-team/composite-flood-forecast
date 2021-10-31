@@ -1,0 +1,221 @@
+{
+	"total_pipeline_operations": [
+		"one_hot_encoding",
+		"ransac_non_lin_reg",
+		"xgbreg",
+		"ransac_lin_reg",
+		"pca",
+		"gbr",
+		"decompose",
+		"adareg"
+	],
+	"depth": 6,
+	"nodes": [
+		{
+			"operation_id": 3,
+			"operation_type": "one_hot_encoding",
+			"operation_name": "OneHotEncodingImplementation",
+			"custom_params": "default_params",
+			"params": "default_params",
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_3.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 4,
+			"operation_type": "one_hot_encoding",
+			"operation_name": "OneHotEncodingImplementation",
+			"custom_params": "default_params",
+			"params": "default_params",
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_4.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 5,
+			"operation_type": "ransac_non_lin_reg",
+			"operation_name": "NonLinearRegRANSACImplementation",
+			"custom_params": {
+				"min_samples": 0.11524708501533763,
+				"residual_threshold": 100.0,
+				"max_trials": 183.029951681312,
+				"max_skips": 313144.02814159973
+			},
+			"params": {
+				"min_samples": 0.11524708501533763,
+				"residual_threshold": 100.0,
+				"max_trials": 183.029951681312,
+				"max_skips": 313144.02814159973
+			},
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_5.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 2,
+			"operation_type": "xgbreg",
+			"operation_name": "MultiOutputRegressor",
+			"custom_params": {
+				"learning_rate": 1.0,
+				"max_depth": 5,
+				"min_child_weight": 7,
+				"n_estimators": 100,
+				"objective": "reg:squarederror",
+				"subsample": 0.8500000000000001
+			},
+			"params": {
+				"learning_rate": 1.0,
+				"max_depth": 5,
+				"min_child_weight": 7,
+				"n_estimators": 100,
+				"objective": "reg:squarederror",
+				"subsample": 0.8500000000000001
+			},
+			"nodes_from": [
+				3,
+				4,
+				5
+			],
+			"fitted_operation_path": "fitted_operations\\operation_2.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 6,
+			"operation_type": "ransac_lin_reg",
+			"operation_name": "LinearRegRANSACImplementation",
+			"custom_params": {
+				"min_samples": 0.45981041229607356,
+				"residual_threshold": 1024.0,
+				"max_trials": 361.58807895323116,
+				"max_skips": 241048.7273788915
+			},
+			"params": {
+				"min_samples": 0.45981041229607356,
+				"residual_threshold": 1024.0,
+				"max_trials": 361.58807895323116,
+				"max_skips": 241048.7273788915
+			},
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_6.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 7,
+			"operation_type": "one_hot_encoding",
+			"operation_name": "OneHotEncodingImplementation",
+			"custom_params": "default_params",
+			"params": "default_params",
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_7.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 8,
+			"operation_type": "pca",
+			"operation_name": "PCAImplementation",
+			"custom_params": {
+				"n_components": 0.6928796195642527,
+				"svd_solver": "full"
+			},
+			"params": {
+				"n_components": 0.6928796195642527,
+				"svd_solver": "full"
+			},
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_8.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 1,
+			"operation_type": "gbr",
+			"operation_name": "MultiOutputRegressor",
+			"custom_params": {
+				"alpha": 0.9516364364351273,
+				"learning_rate": 0.15202956900399167,
+				"loss": "quantile",
+				"max_depth": 6,
+				"max_features": 0.34486610218217445,
+				"min_samples_leaf": 13,
+				"min_samples_split": 5,
+				"n_estimators": 100,
+				"subsample": 0.9812585325072626
+			},
+			"params": {
+				"alpha": 0.9516364364351273,
+				"learning_rate": 0.15202956900399167,
+				"loss": "quantile",
+				"max_depth": 6,
+				"max_features": 0.34486610218217445,
+				"min_samples_leaf": 13,
+				"min_samples_split": 5,
+				"n_estimators": 100,
+				"subsample": 0.9812585325072626
+			},
+			"nodes_from": [
+				2,
+				6,
+				7,
+				8
+			],
+			"fitted_operation_path": "fitted_operations\\operation_1.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 10,
+			"operation_type": "decompose",
+			"operation_name": "DecomposerRegImplementation",
+			"custom_params": "default_params",
+			"params": "default_params",
+			"nodes_from": [
+				1,
+				3
+			],
+			"fitted_operation_path": "fitted_operations\\operation_10.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 9,
+			"operation_type": "ransac_non_lin_reg",
+			"operation_name": "NonLinearRegRANSACImplementation",
+			"custom_params": {
+				"min_samples": 0.893485863472972,
+				"residual_threshold": 500.0,
+				"max_trials": 252.18274921691435,
+				"max_skips": 60133.07788971963
+			},
+			"params": {
+				"min_samples": 0.893485863472972,
+				"residual_threshold": 500.0,
+				"max_trials": 252.18274921691435,
+				"max_skips": 60133.07788971963
+			},
+			"nodes_from": [
+				10
+			],
+			"fitted_operation_path": "fitted_operations\\operation_9.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 0,
+			"operation_type": "adareg",
+			"operation_name": "MultiOutputRegressor",
+			"custom_params": {
+				"learning_rate": 0.24128187521033154,
+				"loss": "exponential",
+				"n_estimators": 100
+			},
+			"params": {
+				"learning_rate": 0.24128187521033154,
+				"loss": "exponential",
+				"n_estimators": 100
+			},
+			"nodes_from": [
+				1,
+				9
+			],
+			"fitted_operation_path": "fitted_operations\\operation_0.pkl",
+			"rating": null
+		}
+	],
+	"descriptive_id": "(((((/n_one_hot_encoding_default_params;;/n_one_hot_encoding_default_params;;/n_ransac_non_lin_reg_{'min_samples': 0.11524708501533763, 'residual_threshold': 100.0, 'max_trials': 183.029951681312, 'max_skips': 313144.02814159973};)/n_xgbreg_{'learning_rate': 1.0, 'max_depth': 5, 'min_child_weight': 7, 'n_estimators': 100, 'objective': 'reg:squarederror', 'subsample': 0.8500000000000001};;/n_one_hot_encoding_default_params;;/n_pca_{'n_components': 0.6928796195642527, 'svd_solver': 'full'};;/n_ransac_lin_reg_{'min_samples': 0.45981041229607356, 'residual_threshold': 1024.0, 'max_trials': 361.58807895323116, 'max_skips': 241048.7273788915};)/n_gbr_{'alpha': 0.9516364364351273, 'learning_rate': 0.15202956900399167, 'loss': 'quantile', 'max_depth': 6, 'max_features': 0.34486610218217445, 'min_samples_leaf': 13, 'min_samples_split': 5, 'n_estimators': 100, 'subsample': 0.9812585325072626};;/n_one_hot_encoding_default_params;)/n_decompose_default_params;)/n_ransac_non_lin_reg_{'min_samples': 0.893485863472972, 'residual_threshold': 500.0, 'max_trials': 252.18274921691435, 'max_skips': 60133.07788971963};;((/n_one_hot_encoding_default_params;;/n_one_hot_encoding_default_params;;/n_ransac_non_lin_reg_{'min_samples': 0.11524708501533763, 'residual_threshold': 100.0, 'max_trials': 183.029951681312, 'max_skips': 313144.02814159973};)/n_xgbreg_{'learning_rate': 1.0, 'max_depth': 5, 'min_child_weight': 7, 'n_estimators': 100, 'objective': 'reg:squarederror', 'subsample': 0.8500000000000001};;/n_one_hot_encoding_default_params;;/n_pca_{'n_components': 0.6928796195642527, 'svd_solver': 'full'};;/n_ransac_lin_reg_{'min_samples': 0.45981041229607356, 'residual_threshold': 1024.0, 'max_trials': 361.58807895323116, 'max_skips': 241048.7273788915};)/n_gbr_{'alpha': 0.9516364364351273, 'learning_rate': 0.15202956900399167, 'loss': 'quantile', 'max_depth': 6, 'max_features': 0.34486610218217445, 'min_samples_leaf': 13, 'min_samples_split': 5, 'n_estimators': 100, 'subsample': 0.9812585325072626};)/n_adareg_{'learning_rate': 0.24128187521033154, 'loss': 'exponential', 'n_estimators': 100}"
+}

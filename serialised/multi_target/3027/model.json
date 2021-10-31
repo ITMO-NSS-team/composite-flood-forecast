@@ -1,0 +1,46 @@
+{
+	"total_pipeline_operations": [
+		"scaling",
+		"xgbreg"
+	],
+	"depth": 2,
+	"nodes": [
+		{
+			"operation_id": 1,
+			"operation_type": "scaling",
+			"operation_name": "ScalingImplementation",
+			"custom_params": "default_params",
+			"params": "default_params",
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_1.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 0,
+			"operation_type": "xgbreg",
+			"operation_name": "MultiOutputRegressor",
+			"custom_params": {
+				"learning_rate": 0.5,
+				"max_depth": 9,
+				"min_child_weight": 4,
+				"n_estimators": 100,
+				"objective": "reg:squarederror",
+				"subsample": 0.7000000000000001
+			},
+			"params": {
+				"learning_rate": 0.5,
+				"max_depth": 9,
+				"min_child_weight": 4,
+				"n_estimators": 100,
+				"objective": "reg:squarederror",
+				"subsample": 0.7000000000000001
+			},
+			"nodes_from": [
+				1
+			],
+			"fitted_operation_path": "fitted_operations\\operation_0.pkl",
+			"rating": null
+		}
+	],
+	"descriptive_id": "(/n_scaling_default_params;)/n_xgbreg_{'learning_rate': 0.5, 'max_depth': 9, 'min_child_weight': 4, 'n_estimators': 100, 'objective': 'reg:squarederror', 'subsample': 0.7000000000000001}"
+}

@@ -1,0 +1,52 @@
+{
+	"total_pipeline_operations": [
+		"normalization",
+		"lgbmreg"
+	],
+	"depth": 2,
+	"nodes": [
+		{
+			"operation_id": 1,
+			"operation_type": "normalization",
+			"operation_name": "NormalizationImplementation",
+			"custom_params": "default_params",
+			"params": "default_params",
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_1.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 0,
+			"operation_type": "lgbmreg",
+			"operation_name": "MultiOutputRegressor",
+			"custom_params": {
+				"num_leaves": 50,
+				"colsample_bytree": 0.6175531605445552,
+				"subsample": 0.7417080083218777,
+				"subsample_freq": 10,
+				"learning_rate": 0.019392563551837647,
+				"n_estimators": 3000,
+				"verbose": -1,
+				"lambda_l1": 1.6900566436062774,
+				"lambda_l2": 2.556137942587536
+			},
+			"params": {
+				"num_leaves": 50,
+				"colsample_bytree": 0.6175531605445552,
+				"subsample": 0.7417080083218777,
+				"subsample_freq": 10,
+				"learning_rate": 0.019392563551837647,
+				"n_estimators": 3000,
+				"verbose": -1,
+				"lambda_l1": 1.6900566436062774,
+				"lambda_l2": 2.556137942587536
+			},
+			"nodes_from": [
+				1
+			],
+			"fitted_operation_path": "fitted_operations\\operation_0.pkl",
+			"rating": null
+		}
+	],
+	"descriptive_id": "(/n_normalization_default_params;)/n_lgbmreg_{'num_leaves': 50, 'colsample_bytree': 0.6175531605445552, 'subsample': 0.7417080083218777, 'subsample_freq': 10, 'learning_rate': 0.019392563551837647, 'n_estimators': 3000, 'verbose': -1, 'lambda_l1': 1.6900566436062774, 'lambda_l2': 2.556137942587536}"
+}
