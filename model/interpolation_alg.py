@@ -5,13 +5,18 @@ from sklearn.neighbors import KNeighborsRegressor
 
 from matplotlib import pyplot as plt
 import warnings
+
+from typing import Callable
+
 warnings.filterwarnings('ignore')
 
 
-def apply_on_dataset(meteo_df: pd.DataFrame, stations_df: pd.DataFrame,
-                     features_to_move: list, stations_ids: list,
-                     n_neighbors: int = 2, knn_model=KNeighborsRegressor, save_path='file.csv',
-                     vis_station_stage=False):
+def interpolation_for_dataset(meteo_df: pd.DataFrame, stations_df: pd.DataFrame,
+                              features_to_move: list, stations_ids: list,
+                              n_neighbors: int = 2,
+                              knn_model: Callable = KNeighborsRegressor,
+                              save_path: str = 'file.csv',
+                              vis_station_stage: bool = False):
     """ Applies interpolation functions to the desired dataframes.
     Warning: the algorithm is applied on the raw data!
 
@@ -59,11 +64,13 @@ def apply_on_dataset(meteo_df: pd.DataFrame, stations_df: pd.DataFrame,
                 # We get the combined data for the selected term - one day
                 merged_current = merged[merged['date'] == current_date]
                 # Adding coordinates to the data for weather stations
-                new_merged = pd.merge(merged_current, meteo_coord, on='station_id_meteo')
+                new_merged = pd.merge(merged_current, meteo_coord,
+                                      on='station_id_meteo')
                 new_merged = new_merged.reset_index()
 
                 try:
-                    # According to the coordinates and altitude we predict the value in the hydropost
+                    # According to the coordinates and altitude we predict the
+                    # value in the hydropost
                     dataset = new_merged[['lat', 'lon', feature]]
                     # Remove the extremely high values - these are gaps
                     if feature == 'snow_coverage_station':
@@ -83,7 +90,8 @@ def apply_on_dataset(meteo_df: pd.DataFrame, stations_df: pd.DataFrame,
                 interpolated_values.append(interpolated_v)
 
             if vis_station_stage:
-                # Plotting the graph of the course of levels and the parameter that was interpolated
+                # Plotting the graph of the course of levels and
+                # the parameter that was interpolated
                 fig, ax1 = plt.subplots()
                 ax1.set_xlabel('Date')
                 ax1.set_ylabel('Maximum level value, cm')
