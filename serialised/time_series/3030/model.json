@@ -1,0 +1,101 @@
+{
+	"total_pipeline_operations": [
+		"smoothing",
+		"lagged",
+		"ridge",
+		"linear"
+	],
+	"depth": 4,
+	"nodes": [
+		{
+			"operation_id": 3,
+			"operation_type": "smoothing",
+			"operation_name": "TsSmoothingImplementation",
+			"custom_params": {
+				"window_size": 19.769950403865245
+			},
+			"params": {
+				"window_size": 19.769950403865245
+			},
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_3.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 2,
+			"operation_type": "lagged",
+			"operation_name": "LaggedTransformationImplementation",
+			"custom_params": {
+				"window_size": 292.75097188424206
+			},
+			"params": {
+				"window_size": 292.75097188424206
+			},
+			"nodes_from": [
+				3
+			],
+			"fitted_operation_path": "fitted_operations\\operation_2.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 1,
+			"operation_type": "ridge",
+			"operation_name": "Ridge",
+			"custom_params": {
+				"alpha": 2.8136771201677284
+			},
+			"params": {
+				"alpha": 2.8136771201677284
+			},
+			"nodes_from": [
+				2
+			],
+			"fitted_operation_path": "fitted_operations\\operation_1.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 5,
+			"operation_type": "lagged",
+			"operation_name": "LaggedTransformationImplementation",
+			"custom_params": {
+				"window_size": 482.4538546967942
+			},
+			"params": {
+				"window_size": 482.4538546967942
+			},
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_5.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 4,
+			"operation_type": "ridge",
+			"operation_name": "Ridge",
+			"custom_params": {
+				"alpha": 8.026840382324291
+			},
+			"params": {
+				"alpha": 8.026840382324291
+			},
+			"nodes_from": [
+				5
+			],
+			"fitted_operation_path": "fitted_operations\\operation_4.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 0,
+			"operation_type": "linear",
+			"operation_name": "LinearRegression",
+			"custom_params": "default_params",
+			"params": "default_params",
+			"nodes_from": [
+				1,
+				4
+			],
+			"fitted_operation_path": "fitted_operations\\operation_0.pkl",
+			"rating": null
+		}
+	],
+	"descriptive_id": "(((/n_smoothing_{'window_size': 19.769950403865245};)/n_lagged_{'window_size': 292.75097188424206};)/n_ridge_{'alpha': 2.8136771201677284};;(/n_lagged_{'window_size': 482.4538546967942};)/n_ridge_{'alpha': 8.026840382324291};)/n_linear_default_params"
+}

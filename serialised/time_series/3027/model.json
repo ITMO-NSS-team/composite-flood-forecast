@@ -1,0 +1,36 @@
+{
+	"total_pipeline_operations": [
+		"lagged",
+		"linear"
+	],
+	"depth": 2,
+	"nodes": [
+		{
+			"operation_id": 1,
+			"operation_type": "lagged",
+			"operation_name": "LaggedTransformationImplementation",
+			"custom_params": {
+				"window_size": 320.4595976030985
+			},
+			"params": {
+				"window_size": 320.4595976030985
+			},
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_1.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 0,
+			"operation_type": "linear",
+			"operation_name": "LinearRegression",
+			"custom_params": "default_params",
+			"params": "default_params",
+			"nodes_from": [
+				1
+			],
+			"fitted_operation_path": "fitted_operations\\operation_0.pkl",
+			"rating": null
+		}
+	],
+	"descriptive_id": "(/n_lagged_{'window_size': 320.4595976030985};)/n_linear_default_params"
+}
