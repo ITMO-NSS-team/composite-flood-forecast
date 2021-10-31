@@ -1,0 +1,136 @@
+{
+	"total_pipeline_operations": [
+		"lagged",
+		"linear",
+		"ridge",
+		"dtreg"
+	],
+	"depth": 4,
+	"nodes": [
+		{
+			"operation_id": 2,
+			"operation_type": "lagged",
+			"operation_name": "LaggedTransformationImplementation",
+			"custom_params": {
+				"window_size": 366.8884827856615
+			},
+			"params": {
+				"window_size": 366.8884827856615
+			},
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_2.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 1,
+			"operation_type": "linear",
+			"operation_name": "LinearRegression",
+			"custom_params": "default_params",
+			"params": "default_params",
+			"nodes_from": [
+				2
+			],
+			"fitted_operation_path": "fitted_operations\\operation_1.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 5,
+			"operation_type": "lagged",
+			"operation_name": "LaggedTransformationImplementation",
+			"custom_params": {
+				"window_size": 302.9714145317485
+			},
+			"params": {
+				"window_size": 302.9714145317485
+			},
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_5.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 4,
+			"operation_type": "linear",
+			"operation_name": "LinearRegression",
+			"custom_params": "default_params",
+			"params": "default_params",
+			"nodes_from": [
+				5
+			],
+			"fitted_operation_path": "fitted_operations\\operation_4.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 7,
+			"operation_type": "lagged",
+			"operation_name": "LaggedTransformationImplementation",
+			"custom_params": {
+				"window_size": 176.86589925876964
+			},
+			"params": {
+				"window_size": 176.86589925876964
+			},
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_7.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 6,
+			"operation_type": "ridge",
+			"operation_name": "Ridge",
+			"custom_params": {
+				"alpha": 5.058941453132681
+			},
+			"params": {
+				"alpha": 5.058941453132681
+			},
+			"nodes_from": [
+				7
+			],
+			"fitted_operation_path": "fitted_operations\\operation_6.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 3,
+			"operation_type": "dtreg",
+			"operation_name": "DecisionTreeRegressor",
+			"custom_params": {
+				"max_depth": 6,
+				"min_samples_leaf": 18,
+				"min_samples_split": 8
+			},
+			"params": {
+				"max_depth": 6,
+				"min_samples_leaf": 18,
+				"min_samples_split": 8
+			},
+			"nodes_from": [
+				4,
+				6
+			],
+			"fitted_operation_path": "fitted_operations\\operation_3.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 0,
+			"operation_type": "dtreg",
+			"operation_name": "DecisionTreeRegressor",
+			"custom_params": {
+				"max_depth": 2,
+				"min_samples_leaf": 11,
+				"min_samples_split": 9
+			},
+			"params": {
+				"max_depth": 2,
+				"min_samples_leaf": 11,
+				"min_samples_split": 9
+			},
+			"nodes_from": [
+				1,
+				3
+			],
+			"fitted_operation_path": "fitted_operations\\operation_0.pkl",
+			"rating": null
+		}
+	],
+	"descriptive_id": "(((/n_lagged_{'window_size': 176.86589925876964};)/n_ridge_{'alpha': 5.058941453132681};;(/n_lagged_{'window_size': 302.9714145317485};)/n_linear_default_params;)/n_dtreg_{'max_depth': 6, 'min_samples_leaf': 18, 'min_samples_split': 8};;(/n_lagged_{'window_size': 366.8884827856615};)/n_linear_default_params;)/n_dtreg_{'max_depth': 2, 'min_samples_leaf': 11, 'min_samples_split': 9}"
+}

@@ -1,0 +1,89 @@
+{
+	"total_pipeline_operations": [
+		"lagged",
+		"dtreg",
+		"ridge",
+		"linear"
+	],
+	"depth": 3,
+	"nodes": [
+		{
+			"operation_id": 2,
+			"operation_type": "lagged",
+			"operation_name": "LaggedTransformationImplementation",
+			"custom_params": {
+				"window_size": 291.4688554930645
+			},
+			"params": {
+				"window_size": 291.4688554930645
+			},
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_2.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 1,
+			"operation_type": "dtreg",
+			"operation_name": "DecisionTreeRegressor",
+			"custom_params": {
+				"max_depth": 4,
+				"min_samples_leaf": 12,
+				"min_samples_split": 15
+			},
+			"params": {
+				"max_depth": 4,
+				"min_samples_leaf": 12,
+				"min_samples_split": 15
+			},
+			"nodes_from": [
+				2
+			],
+			"fitted_operation_path": "fitted_operations\\operation_1.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 4,
+			"operation_type": "lagged",
+			"operation_name": "LaggedTransformationImplementation",
+			"custom_params": {
+				"window_size": 238.14914704093914
+			},
+			"params": {
+				"window_size": 238.14914704093914
+			},
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_4.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 3,
+			"operation_type": "ridge",
+			"operation_name": "Ridge",
+			"custom_params": {
+				"alpha": 8.937294428077285
+			},
+			"params": {
+				"alpha": 8.937294428077285
+			},
+			"nodes_from": [
+				4
+			],
+			"fitted_operation_path": "fitted_operations\\operation_3.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 0,
+			"operation_type": "linear",
+			"operation_name": "LinearRegression",
+			"custom_params": "default_params",
+			"params": "default_params",
+			"nodes_from": [
+				1,
+				3
+			],
+			"fitted_operation_path": "fitted_operations\\operation_0.pkl",
+			"rating": null
+		}
+	],
+	"descriptive_id": "((/n_lagged_{'window_size': 238.14914704093914};)/n_ridge_{'alpha': 8.937294428077285};;(/n_lagged_{'window_size': 291.4688554930645};)/n_dtreg_{'max_depth': 4, 'min_samples_leaf': 12, 'min_samples_split': 15};)/n_linear_default_params"
+}

@@ -1,2 +1,2 @@
 # composite-flood-forecast
-Code for paper "An novel approach to river flood forecasting using composite automated machine learning models"
+Code for paper "Short-term River Flood Forecasting using Composite Models and Automated Machine Learning: the Case Study of Lena River"

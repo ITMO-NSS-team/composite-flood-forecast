@@ -1,0 +1,102 @@
+{
+	"total_pipeline_operations": [
+		"gaussian_filter",
+		"lagged",
+		"ridge",
+		"lasso",
+		"linear"
+	],
+	"depth": 4,
+	"nodes": [
+		{
+			"operation_id": 3,
+			"operation_type": "gaussian_filter",
+			"operation_name": "GaussianFilterImplementation",
+			"custom_params": {
+				"sigma": 1.8035754290153405
+			},
+			"params": {
+				"sigma": 1.8035754290153405
+			},
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_3.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 2,
+			"operation_type": "lagged",
+			"operation_name": "LaggedTransformationImplementation",
+			"custom_params": {
+				"window_size": 136.40093986749875
+			},
+			"params": {
+				"window_size": 136.40093986749875
+			},
+			"nodes_from": [
+				3
+			],
+			"fitted_operation_path": "fitted_operations\\operation_2.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 1,
+			"operation_type": "ridge",
+			"operation_name": "Ridge",
+			"custom_params": {
+				"alpha": 4.868272976476692
+			},
+			"params": {
+				"alpha": 4.868272976476692
+			},
+			"nodes_from": [
+				2
+			],
+			"fitted_operation_path": "fitted_operations\\operation_1.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 5,
+			"operation_type": "lagged",
+			"operation_name": "LaggedTransformationImplementation",
+			"custom_params": {
+				"window_size": 314.0428754857926
+			},
+			"params": {
+				"window_size": 314.0428754857926
+			},
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_5.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 4,
+			"operation_type": "lasso",
+			"operation_name": "Lasso",
+			"custom_params": {
+				"alpha": 8.220705344157818
+			},
+			"params": {
+				"alpha": 8.220705344157818
+			},
+			"nodes_from": [
+				5
+			],
+			"fitted_operation_path": "fitted_operations\\operation_4.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 0,
+			"operation_type": "linear",
+			"operation_name": "LinearRegression",
+			"custom_params": "default_params",
+			"params": "default_params",
+			"nodes_from": [
+				1,
+				4
+			],
+			"fitted_operation_path": "fitted_operations\\operation_0.pkl",
+			"rating": null
+		}
+	],
+	"descriptive_id": "(((/n_gaussian_filter_{'sigma': 1.8035754290153405};)/n_lagged_{'window_size': 136.40093986749875};)/n_ridge_{'alpha': 4.868272976476692};;(/n_lagged_{'window_size': 314.0428754857926};)/n_lasso_{'alpha': 8.220705344157818};)/n_linear_default_params"
+}
