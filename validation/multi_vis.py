@@ -7,8 +7,7 @@ from fedot.core.pipelines.pipeline import Pipeline
 from model.wrap import prepare_table_input_data
 
 
-def multi_target_forecasting_plot():
-    test_size = 1505
+def multi_target_forecasting_plot(test_size: int = 805):
     path = '../serialised/multi_target'
     dataframe_path = '../data/multi_target.csv'
     df = pd.read_csv(dataframe_path, parse_dates=['date'])

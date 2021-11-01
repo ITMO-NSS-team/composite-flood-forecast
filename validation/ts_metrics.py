@@ -10,12 +10,12 @@ from model.metrics import smape, nash_sutcliffe
 from model.wrap import prepare_ts_input_data
 
 
-def time_series_metric_calculation(metrics: list, stations_to_check: list = None):
+def time_series_metric_calculation(metrics: list, stations_to_check: list = None,
+                                   test_size: int = 805):
     metric_by_name = {'smape': smape,
                       'mae': mean_absolute_error,
                       'nse': nash_sutcliffe}
 
-    test_size = 1505
     path = '../serialised/time_series'
     dataframe_path = '../data/level_time_series.csv'
     df = pd.read_csv(dataframe_path)
@@ -31,7 +31,7 @@ def time_series_metric_calculation(metrics: list, stations_to_check: list = None
 
         for serialised_model in serialised_models:
             # Read serialised model
-            model_path = os.path.join(path, serialised_model, 'model.json')
+            model_path = os.path.join(path, str(serialised_model), 'model.json')
             pipeline = Pipeline()
             pipeline.load(model_path)
 
@@ -55,4 +55,4 @@ def time_series_metric_calculation(metrics: list, stations_to_check: list = None
 
 
 if __name__ == '__main__':
-    time_series_metric_calculation(metrics=['nse'])
+    time_series_metric_calculation(metrics=['nse', 'mae', 'smape'])

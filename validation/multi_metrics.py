@@ -9,12 +9,11 @@ from model.metrics import smape, nash_sutcliffe
 from model.wrap import prepare_table_input_data
 
 
-def multi_target_metric_calculation(metrics: list):
+def multi_target_metric_calculation(metrics: list, test_size: int = 805):
     metric_by_name = {'smape': smape,
                       'mae': mean_absolute_error,
                       'nse': nash_sutcliffe}
 
-    test_size = 1505
     path = '../serialised/multi_target'
     dataframe_path = '../data/multi_target.csv'
     df = pd.read_csv(dataframe_path, parse_dates=['date'])
@@ -61,4 +60,4 @@ def multi_target_metric_calculation(metrics: list):
 
 
 if __name__ == '__main__':
-    multi_target_metric_calculation(metrics=['nse'])
+    multi_target_metric_calculation(metrics=['nse', 'mae', 'smape'])
