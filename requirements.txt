@@ -1,4 +1,4 @@
 git+git://github.com/nccr-itmo/FEDOT.git@ba2895fb88c21530b32b6d69d428f000362ae810
 numpy
-seaborn
+seaborn==0.11.2
 matplotlib

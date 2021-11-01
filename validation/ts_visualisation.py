@@ -32,16 +32,15 @@ def time_series_forecasting_plot(stations_to_check: list = None, test_size: int 
 
         # Source time series and test part
         time_series = np.array(station_df['stage_max'])
-        train_part = time_series[:-test_size]
-
         input_data = prepare_ts_input_data(time_series)
-
         val_predict = in_sample_ts_forecast(pipeline=pipeline,
                                             input_data=input_data,
                                             horizon=test_size)
 
         dates = station_df['date']
         plt.plot(dates, input_data.target, label='Actual time series')
+
+        train_part = time_series[:-test_size]
         test_ids = np.arange(len(train_part), len(train_part) + len(val_predict))
         plt.plot(dates.iloc[test_ids],
                  val_predict, label='Forecast for 7 elements ahead')
