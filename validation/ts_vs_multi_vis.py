@@ -12,7 +12,7 @@ from model.metrics import nash_sutcliffe
 rcParams['figure.figsize'] = 7, 6
 
 
-def create_biplots(stations_to_check: list, test_size: int = 805):
+def create_biplots(stations_to_check: list = None, test_size: int = 805):
     ts_path = '../serialised/time_series'
     multi_path = '../serialised/multi_target'
 
@@ -29,10 +29,12 @@ def create_biplots(stations_to_check: list, test_size: int = 805):
 
     for serialised_model in serialised_models:
         # Get time series forecast
-        ts_predict, actual = get_ts_forecast(ts_df, ts_path, serialised_model, test_size)
+        station_ts_df = ts_df[ts_df['station_id'] == int(serialised_model)]
+        ts_predict, actual, _ = get_ts_forecast(station_ts_df, ts_path, serialised_model, test_size)
 
         # Get output from multi-target regression
-        multi_predict = get_multi_forecast(multi_df, multi_path, serialised_model, test_size)
+        station_multi_df = multi_df[multi_df['station_id'] == int(serialised_model)]
+        multi_predict = get_multi_forecast(station_multi_df, multi_path, serialised_model, test_size)
 
         vis_df = pd.DataFrame({'Actual values': actual,
                                'Forecasts of time series model': ts_predict,
