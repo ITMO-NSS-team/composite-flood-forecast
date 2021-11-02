@@ -1,0 +1,31 @@
+{
+	"total_pipeline_operations": [
+		"rfr"
+	],
+	"depth": 1,
+	"nodes": [
+		{
+			"operation_id": 0,
+			"operation_type": "rfr",
+			"operation_name": "RandomForestRegressor",
+			"custom_params": {
+				"bootstrap": true,
+				"max_features": 0.6865980070488052,
+				"min_samples_leaf": 7,
+				"min_samples_split": 11,
+				"n_estimators": 100
+			},
+			"params": {
+				"bootstrap": true,
+				"max_features": 0.6865980070488052,
+				"min_samples_leaf": 7,
+				"min_samples_split": 11,
+				"n_estimators": 100
+			},
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_0.pkl",
+			"rating": null
+		}
+	],
+	"descriptive_id": "/n_rfr_{'bootstrap': True, 'max_features': 0.6865980070488052, 'min_samples_leaf': 7, 'min_samples_split': 11, 'n_estimators': 100}"
+}
