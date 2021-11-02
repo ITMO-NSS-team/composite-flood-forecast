@@ -26,5 +26,5 @@ def prepare_table_input_data(features: np.array, target: np.array):
     input_data = InputData(idx=np.arange(0, len(features)),
                            features=features,
                            target=target, task=task,
-                           data_type=DataTypesEnum.ts)
+                           data_type=DataTypesEnum.table)
     return input_data

@@ -1,11 +1,14 @@
 import os
 import pandas as pd
 import numpy as np
+from fedot.api.main import Fedot
+from fedot.core.pipelines.node import PrimaryNode
 
 from fedot.core.pipelines.pipeline import Pipeline
 from fedot.core.pipelines.ts_wrappers import in_sample_ts_forecast
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error
 
 from model.wrap import prepare_table_input_data, prepare_ts_input_data
 
@@ -87,11 +90,25 @@ def init_ensemble(ts_df: pd.DataFrame, multi_df: pd.DataFrame, ts_path: str,
     train_df['month'] = pd.DatetimeIndex(train_df['date']).month
     train_df['day'] = pd.DatetimeIndex(train_df['date']).day
 
-    rf_model = RandomForestRegressor(max_depth=4, max_leaf_nodes=10)
-    rf_model.fit(np.array(train_df[['month', 'day', 'ts', 'multi']]),
-                 np.array(train_df['actual']))
+    pipeline = Pipeline(PrimaryNode('rfr'))
 
-    # Return Random Forest
-    return rf_model
+    train_features = np.array(train_df[['month', 'day', 'ts', 'multi']])
+    train_target = np.array(train_df['actual'])
+    input_data = prepare_table_input_data(features=train_features,
+                                          target=train_target)
+    pipeline = pipeline.fine_tune_all_nodes(loss_function=mean_absolute_error,
+                                            loss_params=None,
+                                            input_data=input_data,
+                                            iterations=100,
+                                            cv_folds=5)
+    pipeline.fit(input_data)
+    pipeline.save('ensemble')
 
 
+def load_ensemble(serialised_ensembles_path: str, serialised_model):
+    """ Load ensemble model (FEDOT pipeline) and return it to make predictions """
+    model_path = os.path.join(serialised_ensembles_path, str(serialised_model), 'ensemble.json')
+    pipeline = Pipeline()
+    pipeline.load(model_path)
+
+    return pipeline

@@ -55,4 +55,4 @@ def time_series_metric_calculation(metrics: list, stations_to_check: list = None
 
 
 if __name__ == '__main__':
-    time_series_metric_calculation(metrics=['nse', 'mae', 'smape'])
+    time_series_metric_calculation(metrics=['nse', 'mae', 'smape'], stations_to_check=[3050])
