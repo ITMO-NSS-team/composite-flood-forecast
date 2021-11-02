@@ -1,7 +1,7 @@
 import os
 
 import pandas as pd
-from model.ensemble import init_ensemble
+from model.ensemble import init_base_ensemble
 
 
 def ensemble_prepare_models(stations_to_prepare: list = None, test_size: int = 805):
@@ -32,7 +32,7 @@ def ensemble_prepare_models(stations_to_prepare: list = None, test_size: int = 8
             # TODO init model with SRM
             pass
         else:
-            init_ensemble(ts_df, multi_df, ts_path, multi_path, serialised_model, train_len, ensemble_len)
+            init_base_ensemble(ts_df, multi_df, ts_path, multi_path, serialised_model, train_len, ensemble_len)
 
 
 if __name__ == '__main__':

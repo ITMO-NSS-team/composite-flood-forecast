@@ -55,8 +55,8 @@ def get_multi_forecast(station_multi_df, multi_path, serialised_model, test_size
     return multi_predict
 
 
-def prepare_ensemle_data(ts_df, multi_df, ts_path: str,
-                  multi_path: str, serialised_model, test_size):
+def prepare_base_ensemle_data(ts_df, multi_df, ts_path: str,
+                              multi_path: str, serialised_model, test_size):
     # Get time series forecast
     station_ts_df = ts_df[ts_df['station_id'] == int(serialised_model)]
     ts_predict, actual, dates = get_ts_forecast(station_ts_df, ts_path, serialised_model, test_size)
@@ -72,8 +72,8 @@ def prepare_ensemle_data(ts_df, multi_df, ts_path: str,
     return df
 
 
-def init_ensemble(ts_df: pd.DataFrame, multi_df: pd.DataFrame, ts_path: str,
-                  multi_path: str, serialised_model, train_len: int, ensemble_len: int):
+def init_base_ensemble(ts_df: pd.DataFrame, multi_df: pd.DataFrame, ts_path: str,
+                       multi_path: str, serialised_model, train_len: int, ensemble_len: int):
     """ Create ensembling algorithm for water level forecasting based on linear regression """
     # Get time series forecast
     station_ts_df = ts_df[ts_df['station_id'] == int(serialised_model)]

@@ -6,7 +6,7 @@ import numpy as np
 from sklearn.metrics import mean_absolute_error
 
 from model.metrics import smape, nash_sutcliffe
-from model.ensemble import prepare_ensemle_data, load_ensemble
+from model.ensemble import prepare_base_ensemle_data, load_ensemble
 from model.wrap import prepare_table_input_data
 
 
@@ -43,7 +43,7 @@ def ensemble_metric_calculation(metrics: list, stations_to_check: list = None, t
                 pass
             else:
                 # Prepare data for test
-                test_df = prepare_ensemle_data(ts_df, multi_df, ts_path, multi_path, serialised_model, test_size)
+                test_df = prepare_base_ensemle_data(ts_df, multi_df, ts_path, multi_path, serialised_model, test_size)
                 test_features = np.array(test_df[['month', 'day', 'ts', 'multi']])
                 test_target = np.array(test_df['actual'])
 

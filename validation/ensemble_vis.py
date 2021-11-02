@@ -9,7 +9,7 @@ from model.wrap import prepare_table_input_data
 
 rcParams['figure.figsize'] = 9, 6
 
-from model.ensemble import init_ensemble, prepare_ensemle_data, load_ensemble
+from model.ensemble import prepare_base_ensemle_data, load_ensemble
 
 
 def ensemble_forecasting_plot(stations_to_check: list = None, test_size: int = 805):
@@ -38,7 +38,7 @@ def ensemble_forecasting_plot(stations_to_check: list = None, test_size: int = 8
             pass
         else:
             # Prepare data for test
-            test_df = prepare_ensemle_data(ts_df, multi_df, ts_path, multi_path, serialised_model, test_size)
+            test_df = prepare_base_ensemle_data(ts_df, multi_df, ts_path, multi_path, serialised_model, test_size)
             test_features = np.array(test_df[['month', 'day', 'ts', 'multi']])
             test_target = np.array(test_df['actual']).reshape((-1, 1))
 
@@ -56,4 +56,5 @@ def ensemble_forecasting_plot(stations_to_check: list = None, test_size: int = 8
 
 
 if __name__ == '__main__':
-    ensemble_forecasting_plot(stations_to_check=[3019, 3027, 3028, 3029, 3030, 3035, 3041, 3045, 3050, 3230], test_size=805)
+    ensemble_forecasting_plot(stations_to_check=[3019, 3027, 3028, 3029, 3030, 3035, 3041, 3045, 3050, 3230],
+                              test_size=805)
