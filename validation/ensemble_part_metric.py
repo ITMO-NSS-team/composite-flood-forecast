@@ -8,10 +8,10 @@ from validation.paths import TS_PATH, MULTI_PATH, TS_DATAFRAME_PATH, MULTI_DATAF
     get_list_with_stations_id
 
 
-def clip_df_to_may_and_jul(df):
-    """ Remove all months from dataset and stay only May and Jule """
-    df_after_may = df[df['month'] >= 5]
-    df_may_jul = df_after_may[df_after_may['month'] <= 7]
+def clip_df_to_april_and_jul(df):
+    """ Remove all months from dataset and stay only April and Jule """
+    df_after_april = df[df['month'] >= 4]
+    df_may_jul = df_after_april[df_after_april['month'] <= 7]
     return df_may_jul
 
 
@@ -33,12 +33,12 @@ def ensemble_part_metric_calculation(metrics: list, stations_to_check: list = No
 
             if str(serialised_model) == str(3045):
                 test_df = prepare_advanced_ensemle_data(ts_df, multi_df, TS_PATH, MULTI_PATH, serialised_model, test_size)
-                test_df = clip_df_to_may_and_jul(test_df)
+                test_df = clip_df_to_april_and_jul(test_df)
                 test_features = np.array(test_df[['month', 'day', 'ts', 'multi', 'srm']])
                 test_target = np.array(test_df['actual'])
             else:
                 test_df = prepare_base_ensemle_data(ts_df, multi_df, TS_PATH, MULTI_PATH, serialised_model, test_size)
-                test_df = clip_df_to_may_and_jul(test_df)
+                test_df = clip_df_to_april_and_jul(test_df)
                 test_features = np.array(test_df[['month', 'day', 'ts', 'multi']])
                 test_target = np.array(test_df['actual'])
 

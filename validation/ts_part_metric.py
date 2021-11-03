@@ -1,14 +1,9 @@
-import os
 import pandas as pd
 import numpy as np
 
-from fedot.core.pipelines.ts_wrappers import in_sample_ts_forecast
-from fedot.core.pipelines.pipeline import Pipeline
-
 from model.ensemble import get_ts_forecast
 from model.metrics import metric_by_name
-from model.wrap import prepare_ts_input_data
-from validation.ensemble_part_metric import clip_df_to_may_and_jul
+from validation.ensemble_part_metric import clip_df_to_april_and_jul
 from validation.paths import TS_PATH, TS_DATAFRAME_PATH, get_list_with_stations_id
 
 
@@ -29,7 +24,7 @@ def time_series_part_metric_calculation(metrics: list, stations_to_check: list =
 
             forecast_df = pd.DataFrame({'date': dates, 'actual': actual, 'forecast': val_predict})
             forecast_df['month'] = pd.DatetimeIndex(forecast_df['date']).month
-            forecast_df = clip_df_to_may_and_jul(forecast_df)
+            forecast_df = clip_df_to_april_and_jul(forecast_df)
 
             metric_value = metric_function(np.array(forecast_df['actual']),
                                            np.array(forecast_df['forecast']))
