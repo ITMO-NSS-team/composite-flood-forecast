@@ -1,19 +1,33 @@
 import os
 import pandas as pd
 import numpy as np
-from fedot.api.main import Fedot
 from fedot.core.pipelines.node import PrimaryNode
 
 from fedot.core.pipelines.pipeline import Pipeline
 from fedot.core.pipelines.ts_wrappers import in_sample_ts_forecast
-from sklearn.linear_model import LinearRegression
-from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error
 
 from model.wrap import prepare_table_input_data, prepare_ts_input_data
 
 
+def get_srm_forecast(test_size):
+    """ TODO implement SRM model predict """
+    output = np.random.normal(0, 1, test_size)
+    return output
+
+
 def get_ts_forecast(station_ts_df, ts_path, serialised_model, test_size):
+    """ Load serialised model for time series forecasting. And then make a forecast.
+
+    :param station_ts_df: DataFrame with features for prediction
+    :param ts_path: path to serialised time series models
+    :param serialised_model: identifier for model (station id)
+    :param test_size: number of objects to validate
+
+    :return ts_predict: numpy array with time series forecast
+    :return : actual values
+    :return : pandas series with dates for forecasting time indices
+    """
     # Read serialised model for time series forecasting
     ts_model_path = os.path.join(ts_path, str(serialised_model), 'model.json')
     ts_pipeline = Pipeline()
@@ -28,6 +42,14 @@ def get_ts_forecast(station_ts_df, ts_path, serialised_model, test_size):
 
 
 def get_multi_forecast(station_multi_df, multi_path, serialised_model, test_size):
+    """ Load serialised model for time series forecasting. And then make a forecast.
+
+    :param station_multi_df: DataFrame with features for multi-target prediction
+    :param multi_path: path to serialised multi-target models
+    :param serialised_model: identifier for model (station id)
+    :param test_size: number of objects to validate
+    """
+
     # Read serialised model for multi-target regression
     multi_model_path = os.path.join(multi_path, str(serialised_model), 'model.json')
     multi_pipeline = Pipeline()
@@ -72,9 +94,33 @@ def prepare_base_ensemle_data(ts_df, multi_df, ts_path: str,
     return df
 
 
+def prepare_advanced_ensemle_data(ts_df, multi_df, ts_path: str,
+                                  multi_path: str, serialised_model, test_size):
+    # Get time series forecast
+    station_ts_df = ts_df[ts_df['station_id'] == int(serialised_model)]
+    ts_predict, actual, dates = get_ts_forecast(station_ts_df, ts_path, serialised_model, test_size)
+
+    # Get output from multi-target regression
+    station_multi_df = multi_df[multi_df['station_id'] == int(serialised_model)]
+    multi_predict = get_multi_forecast(station_multi_df, multi_path, serialised_model, test_size)
+
+    # Get output from SRM model
+    srm_predict = get_srm_forecast(test_size)
+
+    df = pd.DataFrame({'date': dates, 'ts': ts_predict, 'multi': multi_predict,
+                       'actual': actual, 'srm': srm_predict})
+    df['month'] = pd.DatetimeIndex(df['date']).month
+    df['day'] = pd.DatetimeIndex(df['date']).day
+
+    return df
+
+
 def init_base_ensemble(ts_df: pd.DataFrame, multi_df: pd.DataFrame, ts_path: str,
                        multi_path: str, serialised_model, train_len: int, ensemble_len: int):
-    """ Create ensembling algorithm for water level forecasting based on linear regression """
+    """
+    Create ensembling algorithm for water level forecasting based on linear regression.
+    Ensemble will combine forecasts from time series and multi-target model
+    """
     # Get time series forecast
     station_ts_df = ts_df[ts_df['station_id'] == int(serialised_model)]
     cutted_df = station_ts_df.head(train_len)
@@ -93,6 +139,45 @@ def init_base_ensemble(ts_df: pd.DataFrame, multi_df: pd.DataFrame, ts_path: str
     pipeline = Pipeline(PrimaryNode('rfr'))
 
     train_features = np.array(train_df[['month', 'day', 'ts', 'multi']])
+    train_target = np.array(train_df['actual'])
+    input_data = prepare_table_input_data(features=train_features,
+                                          target=train_target)
+    pipeline = pipeline.fine_tune_all_nodes(loss_function=mean_absolute_error,
+                                            loss_params=None,
+                                            input_data=input_data,
+                                            iterations=100,
+                                            cv_folds=5)
+    pipeline.fit(input_data)
+    pipeline.save('ensemble')
+
+
+def init_advanced_ensemble(ts_df: pd.DataFrame, multi_df: pd.DataFrame, ts_path: str,
+                           multi_path: str, serialised_model, train_len: int, ensemble_len: int):
+    """
+    Create ensembling algorithm for water level forecasting based on linear regression.
+    Ensemble will combine forecasts from time series, multi-target model and SRM model
+    """
+    # Get time series forecast
+    station_ts_df = ts_df[ts_df['station_id'] == int(serialised_model)]
+    cutted_df = station_ts_df.head(train_len)
+    ts_predict, actual, dates = get_ts_forecast(cutted_df, ts_path, serialised_model, ensemble_len)
+
+    # Get output from multi-target regression
+    station_multi_df = multi_df[multi_df['station_id'] == int(serialised_model)]
+    cutted_df = station_multi_df.head(train_len)
+    multi_predict = get_multi_forecast(cutted_df, multi_path, serialised_model, ensemble_len)
+
+    # Get output from SRM model
+    srm_predict = get_srm_forecast(ensemble_len)
+
+    train_df = pd.DataFrame({'date': dates, 'ts': ts_predict, 'multi': multi_predict,
+                             'actual': actual, 'srm': srm_predict})
+    train_df['month'] = pd.DatetimeIndex(train_df['date']).month
+    train_df['day'] = pd.DatetimeIndex(train_df['date']).day
+
+    pipeline = Pipeline(PrimaryNode('rfr'))
+
+    train_features = np.array(train_df[['month', 'day', 'ts', 'multi', 'srm']])
     train_target = np.array(train_df['actual'])
     input_data = prepare_table_input_data(features=train_features,
                                           target=train_target)

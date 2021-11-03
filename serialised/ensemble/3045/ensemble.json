@@ -10,16 +10,16 @@
 			"operation_name": "RandomForestRegressor",
 			"custom_params": {
 				"bootstrap": true,
-				"max_features": 0.819860075869995,
-				"min_samples_leaf": 19,
-				"min_samples_split": 12,
+				"max_features": 0.9837986291302148,
+				"min_samples_leaf": 20,
+				"min_samples_split": 14,
 				"n_estimators": 100
 			},
 			"params": {
 				"bootstrap": true,
-				"max_features": 0.819860075869995,
-				"min_samples_leaf": 19,
-				"min_samples_split": 12,
+				"max_features": 0.9837986291302148,
+				"min_samples_leaf": 20,
+				"min_samples_split": 14,
 				"n_estimators": 100
 			},
 			"nodes_from": [],
@@ -27,5 +27,5 @@
 			"rating": null
 		}
 	],
-	"descriptive_id": "/n_rfr_{'bootstrap': True, 'max_features': 0.819860075869995, 'min_samples_leaf': 19, 'min_samples_split': 12, 'n_estimators': 100}"
+	"descriptive_id": "/n_rfr_{'bootstrap': True, 'max_features': 0.9837986291302148, 'min_samples_leaf': 20, 'min_samples_split': 14, 'n_estimators': 100}"
 }

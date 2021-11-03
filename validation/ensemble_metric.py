@@ -6,29 +6,23 @@ import numpy as np
 from sklearn.metrics import mean_absolute_error
 
 from model.metrics import smape, nash_sutcliffe
-from model.ensemble import prepare_base_ensemle_data, load_ensemble
+from model.ensemble import prepare_base_ensemle_data, load_ensemble, prepare_advanced_ensemle_data
 from model.wrap import prepare_table_input_data
+from validation.paths import TS_PATH, MULTI_PATH, TS_DATAFRAME_PATH, MULTI_DATAFRAME_PATH, SERIALISED_ENSEMBLES_PATH
 
 
 def ensemble_metric_calculation(metrics: list, stations_to_check: list = None, test_size: int = 805):
     metric_by_name = {'smape': smape,
                       'mae': mean_absolute_error,
                       'nse': nash_sutcliffe}
-    # Path to th ensemble models
-    serialised_ensembles_path = '../serialised/ensemble'
-    ts_path = '../serialised/time_series'
-    multi_path = '../serialised/multi_target'
 
-    ts_dataframe_path = '../data/level_time_series.csv'
-    multi_dataframe_path = '../data/multi_target.csv'
-
-    ts_df = pd.read_csv(ts_dataframe_path, parse_dates=['date'])
-    multi_df = pd.read_csv(multi_dataframe_path, parse_dates=['date'])
+    ts_df = pd.read_csv(TS_DATAFRAME_PATH, parse_dates=['date'])
+    multi_df = pd.read_csv(MULTI_DATAFRAME_PATH, parse_dates=['date'])
 
     if stations_to_check is not None:
         serialised_models = stations_to_check
     else:
-        serialised_models = os.listdir(ts_path)
+        serialised_models = os.listdir(TS_PATH)
 
     for metric in metrics:
         metric_function = metric_by_name[metric]
@@ -36,14 +30,15 @@ def ensemble_metric_calculation(metrics: list, stations_to_check: list = None, t
 
         for serialised_model in serialised_models:
             # Load ensemble model
-            model = load_ensemble(serialised_ensembles_path, serialised_model)
+            model = load_ensemble(SERIALISED_ENSEMBLES_PATH, serialised_model)
 
             if str(serialised_model) == str(3045):
-                # TODO use ensemble with SRM
-                pass
+                test_df = prepare_advanced_ensemle_data(ts_df, multi_df, TS_PATH, MULTI_PATH, serialised_model, test_size)
+                test_features = np.array(test_df[['month', 'day', 'ts', 'multi', 'srm']])
+                test_target = np.array(test_df['actual'])
             else:
                 # Prepare data for test
-                test_df = prepare_base_ensemle_data(ts_df, multi_df, ts_path, multi_path, serialised_model, test_size)
+                test_df = prepare_base_ensemle_data(ts_df, multi_df, TS_PATH, MULTI_PATH, serialised_model, test_size)
                 test_features = np.array(test_df[['month', 'day', 'ts', 'multi']])
                 test_target = np.array(test_df['actual'])
 

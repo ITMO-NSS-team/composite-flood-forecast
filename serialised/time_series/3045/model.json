@@ -1,22 +1,120 @@
 {
 	"total_pipeline_operations": [
 		"lagged",
-		"ridge"
+		"ridge",
+		"dtreg",
+		"decompose"
 	],
-	"depth": 2,
+	"depth": 6,
 	"nodes": [
 		{
-			"operation_id": 1,
+			"operation_id": 3,
 			"operation_type": "lagged",
 			"operation_name": "LaggedTransformationImplementation",
 			"custom_params": {
-				"window_size": 322.82225604641974
+				"window_size": 80.90805823789914
 			},
 			"params": {
-				"window_size": 322.82225604641974
+				"window_size": 80.90805823789914
 			},
 			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_3.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 2,
+			"operation_type": "ridge",
+			"operation_name": "Ridge",
+			"custom_params": {
+				"alpha": 1.8861021298352458
+			},
+			"params": {
+				"alpha": 1.8861021298352458
+			},
+			"nodes_from": [
+				3
+			],
+			"fitted_operation_path": "fitted_operations\\operation_2.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 5,
+			"operation_type": "lagged",
+			"operation_name": "LaggedTransformationImplementation",
+			"custom_params": {
+				"window_size": 312.7558657052447
+			},
+			"params": {
+				"window_size": 312.7558657052447
+			},
+			"nodes_from": [],
+			"fitted_operation_path": "fitted_operations\\operation_5.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 4,
+			"operation_type": "ridge",
+			"operation_name": "Ridge",
+			"custom_params": {
+				"alpha": 6.839421096677162
+			},
+			"params": {
+				"alpha": 6.839421096677162
+			},
+			"nodes_from": [
+				5
+			],
+			"fitted_operation_path": "fitted_operations\\operation_4.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 1,
+			"operation_type": "dtreg",
+			"operation_name": "DecisionTreeRegressor",
+			"custom_params": {
+				"max_depth": 9,
+				"min_samples_leaf": 11,
+				"min_samples_split": 10
+			},
+			"params": {
+				"max_depth": 9,
+				"min_samples_leaf": 11,
+				"min_samples_split": 10
+			},
+			"nodes_from": [
+				2,
+				4
+			],
 			"fitted_operation_path": "fitted_operations\\operation_1.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 7,
+			"operation_type": "decompose",
+			"operation_name": "DecomposerRegImplementation",
+			"custom_params": "default_params",
+			"params": "default_params",
+			"nodes_from": [
+				1,
+				3
+			],
+			"fitted_operation_path": "fitted_operations\\operation_7.pkl",
+			"rating": null
+		},
+		{
+			"operation_id": 6,
+			"operation_type": "ridge",
+			"operation_name": "Ridge",
+			"custom_params": {
+				"alpha": 8.315811738347062
+			},
+			"params": {
+				"alpha": 8.315811738347062
+			},
+			"nodes_from": [
+				7
+			],
+			"fitted_operation_path": "fitted_operations\\operation_6.pkl",
 			"rating": null
 		},
 		{
@@ -24,17 +122,18 @@
 			"operation_type": "ridge",
 			"operation_name": "Ridge",
 			"custom_params": {
-				"alpha": 0.9144886033886133
+				"alpha": 2.344861474525311
 			},
 			"params": {
-				"alpha": 0.9144886033886133
+				"alpha": 2.344861474525311
 			},
 			"nodes_from": [
-				1
+				1,
+				6
 			],
 			"fitted_operation_path": "fitted_operations\\operation_0.pkl",
 			"rating": null
 		}
 	],
-	"descriptive_id": "(/n_lagged_{'window_size': 322.82225604641974};)/n_ridge_{'alpha': 0.9144886033886133}"
+	"descriptive_id": "(((((/n_lagged_{'window_size': 312.7558657052447};)/n_ridge_{'alpha': 6.839421096677162};;(/n_lagged_{'window_size': 80.90805823789914};)/n_ridge_{'alpha': 1.8861021298352458};)/n_dtreg_{'max_depth': 9, 'min_samples_leaf': 11, 'min_samples_split': 10};;/n_lagged_{'window_size': 80.90805823789914};)/n_decompose_default_params;)/n_ridge_{'alpha': 8.315811738347062};;((/n_lagged_{'window_size': 312.7558657052447};)/n_ridge_{'alpha': 6.839421096677162};;(/n_lagged_{'window_size': 80.90805823789914};)/n_ridge_{'alpha': 1.8861021298352458};)/n_dtreg_{'max_depth': 9, 'min_samples_leaf': 11, 'min_samples_split': 10};)/n_ridge_{'alpha': 2.344861474525311}"
 }
