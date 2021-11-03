@@ -1,5 +1,3 @@
-import os
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -42,12 +40,15 @@ def ensemble_forecasting_plot(stations_to_check: list = None, test_size: int = 8
         plt.plot(test_df['date'], test_df['multi'], label='Multi-target regression', alpha=0.4)
         plt.plot(test_df['date'], predicted.predict, label='Ensemble')
         if str(serialised_model) == str(3045):
-            plt.plot(test_df['date'], test_df['srm'], label='SRM forecast')
+            plt.plot(test_df['date'], test_df['srm'], label='SRM forecast', alpha=0.4)
         plt.grid()
+        plt.title(f'Station {str(serialised_model)}')
+        plt.xlabel('Date', fontsize=12)
+        plt.ylabel('Maximum level value, cm', fontsize=12)
         plt.legend()
         plt.show()
 
 
 if __name__ == '__main__':
-    ensemble_forecasting_plot(stations_to_check=[3019, 3027, 3028, 3029, 3030, 3035, 3041, 3045, 3050, 3230],
+    ensemble_forecasting_plot(stations_to_check=[3045],
                               test_size=805)
