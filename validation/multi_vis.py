@@ -5,16 +5,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from model.ensemble import get_multi_forecast
-from validation.paths import MULTI_PATH, MULTI_DATAFRAME_PATH
+from validation.paths import MULTI_PATH, MULTI_DATAFRAME_PATH, get_list_with_stations_id
 
 
 def multi_target_forecasting_plot(test_size: int = 805, stations_to_check: list = None):
     df = pd.read_csv(MULTI_DATAFRAME_PATH, parse_dates=['date'])
 
-    if stations_to_check is not None:
-        serialised_models = stations_to_check
-    else:
-        serialised_models = os.listdir(MULTI_PATH)
+    serialised_models = get_list_with_stations_id(stations_to_check)
     for serialised_model in serialised_models:
         station_df = df[df['station_id'] == int(serialised_model)]
         forecasts = get_multi_forecast(station_df, MULTI_PATH, serialised_model, test_size)

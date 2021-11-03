@@ -8,7 +8,7 @@ from pylab import rcParams
 
 from model.ensemble import prepare_base_ensemle_data
 from model.metrics import nash_sutcliffe
-from validation.paths import TS_PATH, MULTI_PATH, TS_DATAFRAME_PATH, MULTI_DATAFRAME_PATH
+from validation.paths import TS_PATH, MULTI_PATH, TS_DATAFRAME_PATH, MULTI_DATAFRAME_PATH, get_list_with_stations_id
 
 rcParams['figure.figsize'] = 7, 6
 
@@ -22,11 +22,7 @@ def create_biplots(stations_to_check: list = None, test_size: int = 805):
     ts_df = pd.read_csv(TS_DATAFRAME_PATH, parse_dates=['date'])
     multi_df = pd.read_csv(MULTI_DATAFRAME_PATH, parse_dates=['date'])
 
-    if stations_to_check is not None:
-        serialised_models = stations_to_check
-    else:
-        serialised_models = os.listdir(TS_PATH)
-
+    serialised_models = get_list_with_stations_id(stations_to_check)
     for serialised_model in serialised_models:
         test_df = prepare_base_ensemle_data(ts_df, multi_df, TS_PATH, MULTI_PATH, serialised_model, test_size)
         target = np.array(test_df['actual'])

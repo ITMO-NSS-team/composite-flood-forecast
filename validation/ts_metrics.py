@@ -8,7 +8,7 @@ from fedot.core.pipelines.pipeline import Pipeline
 from model.ensemble import get_ts_forecast
 from model.metrics import metric_by_name
 from model.wrap import prepare_ts_input_data
-from validation.paths import TS_PATH, TS_DATAFRAME_PATH
+from validation.paths import TS_PATH, TS_DATAFRAME_PATH, get_list_with_stations_id
 
 
 def time_series_metric_calculation(metrics: list, stations_to_check: list = None,
@@ -16,10 +16,7 @@ def time_series_metric_calculation(metrics: list, stations_to_check: list = None
     """ Calculate metrics for time series forecasting algorithm """
     df = pd.read_csv(TS_DATAFRAME_PATH)
 
-    if stations_to_check is not None:
-        serialised_models = stations_to_check
-    else:
-        serialised_models = os.listdir(TS_PATH)
+    serialised_models = get_list_with_stations_id(stations_to_check)
 
     for metric in metrics:
         metric_function = metric_by_name[metric]

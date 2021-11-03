@@ -2,7 +2,7 @@ import os
 
 import pandas as pd
 from model.ensemble import init_base_ensemble, init_advanced_ensemble
-from validation.paths import TS_PATH, MULTI_PATH, TS_DATAFRAME_PATH, MULTI_DATAFRAME_PATH
+from validation.paths import TS_PATH, MULTI_PATH, TS_DATAFRAME_PATH, MULTI_DATAFRAME_PATH, get_list_with_stations_id
 
 
 def ensemble_prepare_models(stations_to_prepare: list = None, test_size: int = 805):
@@ -14,11 +14,7 @@ def ensemble_prepare_models(stations_to_prepare: list = None, test_size: int = 8
     ts_df = pd.read_csv(TS_DATAFRAME_PATH, parse_dates=['date'])
     multi_df = pd.read_csv(MULTI_DATAFRAME_PATH, parse_dates=['date'])
 
-    if stations_to_prepare is not None:
-        serialised_models = stations_to_prepare
-    else:
-        serialised_models = os.listdir(TS_PATH)
-
+    serialised_models = get_list_with_stations_id(stations_to_prepare)
     print(f'Ensemble model will be prepared for stations {serialised_models}')
     for serialised_model in serialised_models:
         # Create ensemble model and save it in folder

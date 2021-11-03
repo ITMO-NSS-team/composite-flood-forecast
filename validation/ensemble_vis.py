@@ -10,18 +10,15 @@ from model.wrap import prepare_table_input_data
 rcParams['figure.figsize'] = 9, 6
 
 from model.ensemble import prepare_base_ensemle_data, load_ensemble, prepare_advanced_ensemle_data
-from validation.paths import TS_PATH, MULTI_PATH, TS_DATAFRAME_PATH, MULTI_DATAFRAME_PATH, SERIALISED_ENSEMBLES_PATH
+from validation.paths import TS_PATH, MULTI_PATH, TS_DATAFRAME_PATH, MULTI_DATAFRAME_PATH, SERIALISED_ENSEMBLES_PATH, \
+    get_list_with_stations_id
 
 
 def ensemble_forecasting_plot(stations_to_check: list = None, test_size: int = 805):
     ts_df = pd.read_csv(TS_DATAFRAME_PATH, parse_dates=['date'])
     multi_df = pd.read_csv(MULTI_DATAFRAME_PATH, parse_dates=['date'])
 
-    if stations_to_check is not None:
-        serialised_models = stations_to_check
-    else:
-        serialised_models = os.listdir(TS_PATH)
-
+    serialised_models = get_list_with_stations_id(stations_to_check)
     for serialised_model in serialised_models:
         # Load ensemble model
         model = load_ensemble(SERIALISED_ENSEMBLES_PATH, serialised_model)

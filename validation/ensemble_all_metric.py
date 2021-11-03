@@ -1,29 +1,19 @@
-import os
-
 import pandas as pd
 import numpy as np
 
-from sklearn.metrics import mean_absolute_error
-
-from model.metrics import smape, nash_sutcliffe
+from model.metrics import metric_by_name
 from model.ensemble import prepare_base_ensemle_data, load_ensemble, prepare_advanced_ensemle_data
 from model.wrap import prepare_table_input_data
-from validation.paths import TS_PATH, MULTI_PATH, TS_DATAFRAME_PATH, MULTI_DATAFRAME_PATH, SERIALISED_ENSEMBLES_PATH
+from validation.paths import TS_PATH, MULTI_PATH, TS_DATAFRAME_PATH, MULTI_DATAFRAME_PATH, SERIALISED_ENSEMBLES_PATH, \
+    get_list_with_stations_id
 
 
 def ensemble_metric_calculation(metrics: list, stations_to_check: list = None, test_size: int = 805):
-    metric_by_name = {'smape': smape,
-                      'mae': mean_absolute_error,
-                      'nse': nash_sutcliffe}
-
+    """ Calculate metric for ensemble of models for all test size """
     ts_df = pd.read_csv(TS_DATAFRAME_PATH, parse_dates=['date'])
     multi_df = pd.read_csv(MULTI_DATAFRAME_PATH, parse_dates=['date'])
 
-    if stations_to_check is not None:
-        serialised_models = stations_to_check
-    else:
-        serialised_models = os.listdir(TS_PATH)
-
+    serialised_models = get_list_with_stations_id(stations_to_check)
     for metric in metrics:
         metric_function = metric_by_name[metric]
         metric_values = []

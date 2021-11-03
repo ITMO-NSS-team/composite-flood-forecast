@@ -7,7 +7,7 @@ from pylab import rcParams
 rcParams['figure.figsize'] = 7, 6
 
 from model.ensemble import get_ts_forecast
-from validation.paths import TS_PATH, TS_DATAFRAME_PATH
+from validation.paths import TS_PATH, TS_DATAFRAME_PATH, get_list_with_stations_id
 
 
 def time_series_forecasting_plot(stations_to_check: list = None, test_size: int = 805):
@@ -18,11 +18,7 @@ def time_series_forecasting_plot(stations_to_check: list = None, test_size: int 
     """
     df = pd.read_csv(TS_DATAFRAME_PATH, parse_dates=['date'])
 
-    if stations_to_check is not None:
-        serialised_models = stations_to_check
-    else:
-        serialised_models = os.listdir(TS_PATH)
-
+    serialised_models = get_list_with_stations_id(stations_to_check)
     for serialised_model in serialised_models:
         station_df = df[df['station_id'] == int(serialised_model)]
 
