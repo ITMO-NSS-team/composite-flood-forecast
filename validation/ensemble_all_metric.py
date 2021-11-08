@@ -12,6 +12,7 @@ from validation.paths import SNOWCOVER_4045_PATH, RIVER4045_PATH, PRECIP_4045_PA
 from model.phys_model.train_converter import get_meteo_df
 from model.phys_model.launch_srm_model import load_converter, load_SRM
 
+
 def ensemble_metric_calculation(metrics: list, stations_to_check: list = None, test_size: int = 805):
     """ Calculate metric for ensemble of models for all test size """
     ts_df = pd.read_csv(TS_DATAFRAME_PATH, parse_dates=['date'])
@@ -36,7 +37,6 @@ def ensemble_metric_calculation(metrics: list, stations_to_check: list = None, t
             
                 preloaded_converter = load_converter(CONVERTER_PATH)
                 preloaded_SRM = load_SRM(SRM_PATH)
-                    
                 
                 test_df = prepare_advanced_ensemle_data(ts_df, multi_df, TS_PATH, MULTI_PATH, serialised_model, test_size,
                                                         preloaded_SRM, preloaded_converter, river_ts, (meteo_ts, snow_ts, rainfall_ts))
@@ -52,6 +52,7 @@ def ensemble_metric_calculation(metrics: list, stations_to_check: list = None, t
             input_data = prepare_table_input_data(features=test_features,
                                                   target=test_target)
             predicted = model.predict(input_data)
+            # predicted = np.array(test_df['srm'])
 
             metric_value = metric_function(test_target,  predicted.predict)
             metric_values.append(metric_value)
@@ -62,5 +63,5 @@ def ensemble_metric_calculation(metrics: list, stations_to_check: list = None, t
 
 if __name__ == '__main__':
     ensemble_metric_calculation(metrics=['nse', 'mae', 'smape'],
-                                stations_to_check=[3045,],
+                                stations_to_check=None,
                                 test_size=805)

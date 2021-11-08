@@ -39,8 +39,6 @@ pylab.rcParams.update(params)
 # global RAINFALL_EPS, SNOWCOVER_EPS, ICEMELT_TEMP
 
 
-
-
 def dbscan_predict(dbscan_model, X_new, metric=sp.spatial.distance.cosine):
     '''
     Function taken from
@@ -207,7 +205,6 @@ class DischargeModel(object):
         if len(set(self.clustering.labels_)) < 5:
             self.clustering_method = 'KMeans'
             self.clustering = KMeans(n_clusters=base_clusters).fit(data_transformed_scaled)
-
 
     def get_params(self, variables, data):
         '''
@@ -405,10 +402,12 @@ def fit_3045_phys_model(*meteo_dataframes):
 
 
 def apply_3045_phys_model(dm, river_dataframe, forecast_intervals = 7, *meteo_dataframes):
+    # meteo_dataframes = meteo_dataframes[0]
     data_partial = meteo_dataframes[0]
     for idx, frame in enumerate(meteo_dataframes[1:]):
-        data_partial = pd.merge(left=data_partial, right=frame, how='left', on='date')
-        
+        data_partial = pd.merge(left=data_partial, right=frame, how='left', on='date',
+                                suffixes=False)
+
     data_partial = data_partial.interpolate(limit_direction='both')
 
     # river = pd.read_csv('/home/maslyaev/hton/edn/data/4rd_checkpoint/no_gaps_train.csv', parse_dates=['date'])
@@ -466,5 +465,3 @@ def apply_3045_phys_model(dm, river_dataframe, forecast_intervals = 7, *meteo_da
             # print('meteoparams', meteoparams, 'vars:', variables)
             forecasts.append(dm.predict_1day(variables, meteoparams))   
     return np.array(forecasts)
-        
-        

@@ -39,11 +39,13 @@ def ensemble_part_metric_calculation(metrics: list, stations_to_check: list = No
             if str(serialised_model) == str(3045):
                 river_ts = pd.read_csv(RIVER4045_PATH, parse_dates=['date'])
                 meteo_ts = get_meteo_df()
+                meteo_ts = meteo_ts.drop(labels=['precipitation'], axis=1)
                 snow_ts = pd.read_csv(SNOWCOVER_4045_PATH, parse_dates=['date'])
-                rainfall_ts = pd.read_csv(PRECIP_4045_PATH, parse_dates=['date'])
-            
+                rainfall_ts = pd.read_csv(PRECIP_4045_PATH,
+                                          parse_dates=['date'])
+
                 preloaded_converter = load_converter(CONVERTER_PATH)
-                preloaded_SRM = load_SRM(SRM_PATH)                
+                preloaded_SRM = load_SRM(SRM_PATH)
                 
                 test_df = prepare_advanced_ensemle_data(ts_df, multi_df, TS_PATH, MULTI_PATH, serialised_model, test_size,
                                                         preloaded_SRM, preloaded_converter, river_ts, (meteo_ts, snow_ts, rainfall_ts))
@@ -60,6 +62,7 @@ def ensemble_part_metric_calculation(metrics: list, stations_to_check: list = No
             input_data = prepare_table_input_data(features=test_features,
                                                   target=test_target)
             predicted = model.predict(input_data)
+            # predicted = np.array(test_df['srm'])
 
             metric_value = metric_function(test_target, predicted.predict)
             metric_values.append(metric_value)
@@ -70,4 +73,4 @@ def ensemble_part_metric_calculation(metrics: list, stations_to_check: list = No
 
 if __name__ == '__main__':
     ensemble_part_metric_calculation(metrics=['nse', 'mae', 'smape'],
-                                     stations_to_check=[3019, 3027, 3028, 3029, 3030, 3035, 3041, 3045, 3050, 3230])
+                                     stations_to_check=[3045])

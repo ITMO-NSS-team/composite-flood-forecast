@@ -20,7 +20,7 @@ def get_srm_forecast(preloaded_SRM, preloaded_convert_model, river_df, *meteo_df
     output = convert_discharge_into_stage_max(preloaded_convert_model, forecast_discharge, 
                                               [date.month for date in meteo_dfs[0]['date']])
     print('SRM calculations conducted')
-    return output
+    return output, meteo_dfs[0]['date']
 
 
 def get_ts_forecast(station_ts_df, ts_path, serialised_model, test_size):
@@ -106,19 +106,22 @@ def prepare_advanced_ensemle_data(ts_df, multi_df, ts_path: str,
                                   multi_path: str, serialised_model, test_size,
                                   preloaded_SRM, preloaded_convert_model, river_df, meteo_dfs):
     # Get output from SRM model
-    srm_predict = get_srm_forecast(preloaded_SRM, preloaded_convert_model, river_df, *meteo_dfs)
-    # return None
+    srm_predict, srm_dates = get_srm_forecast(preloaded_SRM, preloaded_convert_model, river_df, *meteo_dfs)
+    srm_df = pd.DataFrame({'srm_preds': srm_predict, 'date': srm_dates})
 
     # Get time series forecast
     station_ts_df = ts_df[ts_df['station_id'] == int(serialised_model)]
     ts_predict, actual, dates = get_ts_forecast(station_ts_df, ts_path, serialised_model, test_size)
+
+    srm_df = srm_df[srm_df['date'] >= dates.iloc[0]]
+    srm_df = srm_df[srm_df['date'] <= dates.iloc[-1]]
 
     # Get output from multi-target regression
     station_multi_df = multi_df[multi_df['station_id'] == int(serialised_model)]
     multi_predict = get_multi_forecast(station_multi_df, multi_path, serialised_model, test_size)
 
     df = pd.DataFrame({'date': dates, 'ts': ts_predict, 'multi': multi_predict,
-                       'actual': actual, 'srm': srm_predict})
+                       'actual': actual, 'srm': np.array(srm_df['srm_preds'])})
     df['month'] = pd.DatetimeIndex(df['date']).month
     df['day'] = pd.DatetimeIndex(df['date']).day
 
@@ -169,12 +172,16 @@ def init_advanced_ensemble(ts_df: pd.DataFrame, multi_df: pd.DataFrame, ts_path:
     Ensemble will combine forecasts from time series, multi-target model and SRM model
     """
     # Get output from SRM model
-    srm_predict = get_srm_forecast(preloaded_SRM, preloaded_convert_model, river_df, meteo_dfs)
+    srm_predict, srm_dates = get_srm_forecast(preloaded_SRM, preloaded_convert_model, river_df, *meteo_dfs)
+    srm_df = pd.DataFrame({'srm_preds': srm_predict, 'date': srm_dates})
 
     # Get time series forecast
     station_ts_df = ts_df[ts_df['station_id'] == int(serialised_model)]
     cutted_df = station_ts_df.head(train_len)
     ts_predict, actual, dates = get_ts_forecast(cutted_df, ts_path, serialised_model, ensemble_len)
+
+    srm_df = srm_df[srm_df['date'] >= dates.iloc[0]]
+    srm_df = srm_df[srm_df['date'] <= dates.iloc[-1]]
 
     # Get output from multi-target regression
     station_multi_df = multi_df[multi_df['station_id'] == int(serialised_model)]
@@ -182,7 +189,7 @@ def init_advanced_ensemble(ts_df: pd.DataFrame, multi_df: pd.DataFrame, ts_path:
     multi_predict = get_multi_forecast(cutted_df, multi_path, serialised_model, ensemble_len)
 
     train_df = pd.DataFrame({'date': dates, 'ts': ts_predict, 'multi': multi_predict,
-                             'actual': actual, 'srm': srm_predict})
+                             'actual': actual, 'srm': np.array(srm_df['srm_preds'])})
     train_df['month'] = pd.DatetimeIndex(train_df['date']).month
     train_df['day'] = pd.DatetimeIndex(train_df['date']).day
 
