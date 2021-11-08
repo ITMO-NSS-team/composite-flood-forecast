@@ -8,11 +8,18 @@ from fedot.core.pipelines.ts_wrappers import in_sample_ts_forecast
 from sklearn.metrics import mean_absolute_error
 
 from model.wrap import prepare_table_input_data, prepare_ts_input_data
+from model.phys_model.srm_model import  apply_3045_phys_model
+from model.phys_model.launch_srm_model import convert_discharge_into_stage_max
 
 
-def get_srm_forecast(test_size):
-    """ TODO implement SRM model predict """
-    output = np.random.normal(0, 1, test_size)
+def get_srm_forecast(preloaded_SRM, preloaded_convert_model, river_df, *meteo_dfs):
+    # """ TODO implement SRM model predict """
+    print(type(river_df), [type(df) for df in meteo_dfs])
+    intervals = 7
+    forecast_discharge = apply_3045_phys_model(preloaded_SRM, river_df, intervals, *meteo_dfs)
+    output = convert_discharge_into_stage_max(preloaded_convert_model, forecast_discharge, 
+                                              [date.month for date in meteo_dfs[0]['date']])
+    print('SRM calculations conducted')
     return output
 
 
@@ -29,6 +36,7 @@ def get_ts_forecast(station_ts_df, ts_path, serialised_model, test_size):
     :return : pandas series with dates for forecasting time indices
     """
     # Read serialised model for time series forecasting
+
     ts_model_path = os.path.join(ts_path, str(serialised_model), 'model.json')
     ts_pipeline = Pipeline()
     ts_pipeline.load(ts_model_path)
@@ -95,7 +103,12 @@ def prepare_base_ensemle_data(ts_df, multi_df, ts_path: str,
 
 
 def prepare_advanced_ensemle_data(ts_df, multi_df, ts_path: str,
-                                  multi_path: str, serialised_model, test_size):
+                                  multi_path: str, serialised_model, test_size,
+                                  preloaded_SRM, preloaded_convert_model, river_df, meteo_dfs):
+    # Get output from SRM model
+    srm_predict = get_srm_forecast(preloaded_SRM, preloaded_convert_model, river_df, *meteo_dfs)
+    # return None
+
     # Get time series forecast
     station_ts_df = ts_df[ts_df['station_id'] == int(serialised_model)]
     ts_predict, actual, dates = get_ts_forecast(station_ts_df, ts_path, serialised_model, test_size)
@@ -103,9 +116,6 @@ def prepare_advanced_ensemle_data(ts_df, multi_df, ts_path: str,
     # Get output from multi-target regression
     station_multi_df = multi_df[multi_df['station_id'] == int(serialised_model)]
     multi_predict = get_multi_forecast(station_multi_df, multi_path, serialised_model, test_size)
-
-    # Get output from SRM model
-    srm_predict = get_srm_forecast(test_size)
 
     df = pd.DataFrame({'date': dates, 'ts': ts_predict, 'multi': multi_predict,
                        'actual': actual, 'srm': srm_predict})
@@ -152,11 +162,15 @@ def init_base_ensemble(ts_df: pd.DataFrame, multi_df: pd.DataFrame, ts_path: str
 
 
 def init_advanced_ensemble(ts_df: pd.DataFrame, multi_df: pd.DataFrame, ts_path: str,
-                           multi_path: str, serialised_model, train_len: int, ensemble_len: int):
+                           multi_path: str, serialised_model, train_len: int, ensemble_len: int, 
+                           preloaded_SRM, preloaded_convert_model, river_df, meteo_dfs):
     """
     Create ensembling algorithm for water level forecasting based on linear regression.
     Ensemble will combine forecasts from time series, multi-target model and SRM model
     """
+    # Get output from SRM model
+    srm_predict = get_srm_forecast(preloaded_SRM, preloaded_convert_model, river_df, meteo_dfs)
+
     # Get time series forecast
     station_ts_df = ts_df[ts_df['station_id'] == int(serialised_model)]
     cutted_df = station_ts_df.head(train_len)
@@ -166,9 +180,6 @@ def init_advanced_ensemble(ts_df: pd.DataFrame, multi_df: pd.DataFrame, ts_path:
     station_multi_df = multi_df[multi_df['station_id'] == int(serialised_model)]
     cutted_df = station_multi_df.head(train_len)
     multi_predict = get_multi_forecast(cutted_df, multi_path, serialised_model, ensemble_len)
-
-    # Get output from SRM model
-    srm_predict = get_srm_forecast(ensemble_len)
 
     train_df = pd.DataFrame({'date': dates, 'ts': ts_predict, 'multi': multi_predict,
                              'actual': actual, 'srm': srm_predict})
