@@ -15,6 +15,7 @@ PRECIP_4045_PATH = '../data/rainfall_data_test.csv'
 CONVERTER_PATH = '../serialised/level_model.pkl'
 SRM_PATH = '../serialised/SRM.pkl'
 
+
 def get_list_with_stations_id(stations_to_check):
     if stations_to_check is not None:
         return stations_to_check
