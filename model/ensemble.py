@@ -12,11 +12,17 @@ from model.phys_model.srm_model import  apply_3045_phys_model
 from model.phys_model.launch_srm_model import convert_discharge_into_stage_max
 
 
-def get_srm_forecast(preloaded_SRM, preloaded_convert_model, river_df, *meteo_dfs):
-    # """ TODO implement SRM model predict """
+def get_srm_forecast(preloaded_srm, preloaded_convert_model, river_df, *meteo_dfs):
+    """ Forecast from SRM model
+
+    :param preloaded_srm: callable object, fitted model
+    :param preloaded_convert_model: model to convert SRM output (discharge) into water levels
+    :param river_df: dataframe with information from hydro gauges
+    :param meteo_dfs: dataframes with meteo info
+    """
     print(type(river_df), [type(df) for df in meteo_dfs])
     intervals = 7
-    forecast_discharge = apply_3045_phys_model(preloaded_SRM, river_df, intervals, *meteo_dfs)
+    forecast_discharge = apply_3045_phys_model(preloaded_srm, river_df, intervals, *meteo_dfs)
     output = convert_discharge_into_stage_max(preloaded_convert_model, forecast_discharge, 
                                               [date.month for date in meteo_dfs[0]['date']])
     print('SRM calculations conducted')
@@ -104,9 +110,9 @@ def prepare_base_ensemle_data(ts_df, multi_df, ts_path: str,
 
 def prepare_advanced_ensemle_data(ts_df, multi_df, ts_path: str,
                                   multi_path: str, serialised_model, test_size,
-                                  preloaded_SRM, preloaded_convert_model, river_df, meteo_dfs):
+                                  preloaded_srm, preloaded_convert_model, river_df, meteo_dfs):
     # Get output from SRM model
-    srm_predict, srm_dates = get_srm_forecast(preloaded_SRM, preloaded_convert_model, river_df, *meteo_dfs)
+    srm_predict, srm_dates = get_srm_forecast(preloaded_srm, preloaded_convert_model, river_df, *meteo_dfs)
     srm_df = pd.DataFrame({'srm_preds': srm_predict, 'date': srm_dates})
 
     # Get time series forecast
@@ -165,14 +171,14 @@ def init_base_ensemble(ts_df: pd.DataFrame, multi_df: pd.DataFrame, ts_path: str
 
 
 def init_advanced_ensemble(ts_df: pd.DataFrame, multi_df: pd.DataFrame, ts_path: str,
-                           multi_path: str, serialised_model, train_len: int, ensemble_len: int, 
-                           preloaded_SRM, preloaded_convert_model, river_df, meteo_dfs):
+                           multi_path: str, serialised_model, train_len: int, ensemble_len: int,
+                           preloaded_srm, preloaded_convert_model, river_df, meteo_dfs):
     """
     Create ensembling algorithm for water level forecasting based on linear regression.
     Ensemble will combine forecasts from time series, multi-target model and SRM model
     """
     # Get output from SRM model
-    srm_predict, srm_dates = get_srm_forecast(preloaded_SRM, preloaded_convert_model, river_df, *meteo_dfs)
+    srm_predict, srm_dates = get_srm_forecast(preloaded_srm, preloaded_convert_model, river_df, *meteo_dfs)
     srm_df = pd.DataFrame({'srm_preds': srm_predict, 'date': srm_dates})
 
     # Get time series forecast

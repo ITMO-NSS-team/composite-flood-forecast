@@ -1,13 +1,8 @@
-import os
 import pandas as pd
 import numpy as np
 
-from fedot.core.pipelines.ts_wrappers import in_sample_ts_forecast
-from fedot.core.pipelines.pipeline import Pipeline
-
 from model.ensemble import get_ts_forecast
 from model.metrics import metric_by_name
-from model.wrap import prepare_ts_input_data
 from validation.paths import TS_PATH, TS_DATAFRAME_PATH, get_list_with_stations_id
 
 

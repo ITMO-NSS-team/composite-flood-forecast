@@ -36,14 +36,12 @@ params = {'legend.fontsize': 'x-large',
           'ytick.labelsize': 'large'}
 pylab.rcParams.update(params)
 
-# global RAINFALL_EPS, SNOWCOVER_EPS, ICEMELT_TEMP
-
 
 def dbscan_predict(dbscan_model, X_new, metric=sp.spatial.distance.cosine):
-    '''
+    """
     Function taken from
     https://stackoverflow.com/questions/27822752/scikit-learn-predicting-new-points-with-dbscan
-    '''
+    """
 
     # Result is noise by default
     y_new = np.ones(shape=len(X_new), dtype=int) * -1
@@ -58,21 +56,8 @@ def dbscan_predict(dbscan_model, X_new, metric=sp.spatial.distance.cosine):
     return y_new
 
 
-# def model_equation_sourceless(params, variables):
-#     '''
-#     params : np.array
-#         parameters of the runoff model, params[0] - discharge recession coeff,
-#         params[1] - downstream flow coeff;
-
-#     variables : tuple
-#         physical variables of the runoff model
-#         variables[0] - discharge from the previous day, variables[1] - upstream point data
-#     '''
-    
-#     return  (params[0] * variables[0] + params[1] * (variables[0] - variables[1]))
-
 def opt_sourceless_equation(params, *variables):
-    '''
+    """
     params : np.array
         parameters of the runoff model, params[0] - discharge recession coeff,
         params[1] - downstream flow coeff;
@@ -82,22 +67,19 @@ def opt_sourceless_equation(params, *variables):
         variables[0], np.ndarray - degree days; variables[1], np.ndarray - fractional snow cover; 
         variables[2], np.ndarray - watershed area; variables[3], np.ndarray - rainfall;
         variables[4], np.ndarray - discharge; variables[5], np.ndarray - upstream point data;
-    '''
-    
-    # print(variables[4], variables[5])
-    # print(variables[0].size, [type(var) for var in variables])
+    """
+
     f_py = lambda t_idx: (params[0] * variables[4][t_idx - 1] +
                           params[1] * (variables[4][t_idx - 1] - variables[5][t_idx - 1]) - 
                           variables[4][t_idx])
     f_vect = np.vectorize(f_py)
     errs = f_vect(np.arange(1, variables[4].size))
-    # print(errs.shape)
     res = np.sum(np.abs(errs))
-    # print(res)
     return res
 
+
 def model_equation(params, variables):
-    '''
+    """
     params : np.array
         parameters of the runoff model, params[0] - discharge recession coeff, 
         params[1] - downstream flow coeff, params[2] - snow runoff coeff,
@@ -108,7 +90,7 @@ def model_equation(params, variables):
         physical variables of the runoff model
         variables[0] - degree days, variables[1] - fractional snow cover, variables[2] - watershed area,
         variables[3] - rainfall, variables[4] - discharge, variables[5] - upstream point data
-    '''
+    """
     k = 10000. / 86400.
     return ((params[2] * params[4] * variables[0] * variables[1] +
              params[3] * variables[3]) * variables[2] * k * (1 - params[0]) +
@@ -117,7 +99,7 @@ def model_equation(params, variables):
 
 
 def opt_equation(params, *variables):
-    '''
+    """
     params : np.array
         parameters of the runoff model, params[0] - snow runoff coeff, params[1] - rain_runoff_coeff,
         params[2] - degree day factor.
@@ -129,10 +111,7 @@ def opt_equation(params, *variables):
         variables[4], np.ndarray - discharge; variables[5], np.ndarray - upstream point data;
         variables[6], float - discharge recession coeff, obtained from previous optimization;
         variables[7], float - downstream flow coeff, obtained from previous optimization.
-        
-
-    '''
-    # print([])
+    """
     k = 10000. / 86400.
 
     f_py = lambda t_idx: ((params[0] * params[2] * variables[0][t_idx - 1] * variables[1][t_idx - 1] +
@@ -155,12 +134,11 @@ def mask_by_recession(data : pd.DataFrame):
 
 
 def select_data(data, mask, gauge_params):
-    param_columns = ['snow_height', 'snowcover',#'snow_coverage_station',
+    param_columns = ['snow_height', 'snowcover',
                      'air_temperature', 'relative_humidity',
                      'pressure', 'wind_direction', 'wind_speed_aver',
                      'precipitation']
     area = gauge_params['area']
-    # section_to = params['section_to']
     lapse = gauge_params['lapse']
     h_mean = gauge_params['h_mean']
     h_st = gauge_params['h_st']
@@ -173,7 +151,7 @@ def select_data(data, mask, gauge_params):
     snow_cover = data_section.snowcover.to_numpy()
     total_precip = data_section.precipitation.to_numpy()
 
-    # Модифицируем значения осадков
+    # Let's modify the values of precipitation
     rainfall = rainfall_convert(total_precip, temps)
 
     upstream_discharge = data_section.discharge_3036.to_numpy()
@@ -207,13 +185,12 @@ class DischargeModel(object):
             self.clustering = KMeans(n_clusters=base_clusters).fit(data_transformed_scaled)
 
     def get_params(self, variables, data):
-        '''
+        """
         variables : tuple
             physical variables of the runoff model
             variables[0] - degree days, variables[1] - fractional snow cover, variables[2] - watershed area,
             variables[3] - rainfall, variables[4] - discharge, variables[5] - upstream point data
-
-        '''
+        """
         assert isinstance(variables, tuple)
 
         self.get_clusters(data)
@@ -236,15 +213,13 @@ class DischargeModel(object):
                                                                                      args=var_temp)
 
     def get_params_simplified(self, data, gauge_params):
-        '''
+        """
         variables : tuple
             physical variables of the runoff model
             variables[0] - degree days, variables[1] - fractional snow cover, variables[2] - watershed area,
             variables[3] - rainfall, variables[4] - discharge, variables[5] - upstream point data
+        """
 
-        '''
-        
-        # assert isinstance(variables, tuple)
         assert isinstance(data, pd.DataFrame)
     
         bounds_1 = ((0., 1.), (-10, 10))
@@ -260,7 +235,7 @@ class DischargeModel(object):
                                                      args=variables_section).x
         
         print('rec_params:', rec_params)        
-        #training of water input parameters
+        # Training of water input parameters
         variables_section, data_section = select_data(data, ~recession_mask, gauge_params)
         
         self.get_clusters(data_section)
@@ -271,8 +246,6 @@ class DischargeModel(object):
         print(self.cluster_params['recession_only'])
         time.sleep(5)
 
-
-        # self.cluster_params = {}
         for cluster_label in set(self.clustering.labels_):
             if cluster_label != -1:
                 indexes = list(np.where(self.clustering.labels_ == cluster_label))
@@ -308,10 +281,11 @@ class DischargeModel(object):
             return model_equation(self.cluster_params['recession_only'], variables)
 
     def predict_period(self, variables, meteodata, period=None):
-        '''
+        """
         period = meteodata.shape[0]
-        '''
+        """
         raise NotImplementedError('Not refactored yet')
+
         if period is None:
             preds = np.empty(meteodata.shape[0])
         else:
@@ -344,21 +318,13 @@ def get_const_for_3045():
     return params
 
 
-# def snowcover_preprocessing(snowcover, sigma = 3):
-#     # snowcover = pd.read_csv(scover_filename)
-#     snowcover = snowcover.interpolate(method = 'linear')
-#     snowcover['snowcover'] = gaussian_filter1d(snowcover['snowcover'], sigma)
-#     return snowcover
-
-
 def fit_3045_phys_model(*meteo_dataframes):
     """
-    Функция обучает физическую модель для гидрологического поста номер 3045
+    The function trains the physical model for hydro gauge number 3045
     """
-    # Получим постоянные для данного пункта
+    # Obtain the constants for this item
     gauge_params = get_const_for_3045()
 
-    # snowcover = snowcover_preprocessing(snowcover)
     data_partial = meteo_dataframes[0]
     for idx, frame in enumerate(meteo_dataframes[1:]):
         data_partial = pd.merge(left=data_partial, right=frame, how='left', on='date')
@@ -366,43 +332,22 @@ def fit_3045_phys_model(*meteo_dataframes):
     print('data shape', data_partial.shape)
     dm = DischargeModel()
 
-    # Датафрейм с значениями расходов по станциями
+    # Dataframe with discharge values by station
     river = pd.read_csv('/home/maslyaev/hton/edn/data/4rd_checkpoint/no_gaps_train.csv', parse_dates=['date'])
     columns = ['date', 'station_id', 'discharge']
     river_3042 = river[river.station_id == 3042][columns]
     river_3036 = river[river.station_id == 3036][columns]
-    # Оставляем только значения расходов
+    # Leave only the discharge values
     rivers = pd.merge(left=river_3042, right=river_3036, how='inner',
                       on='date', suffixes=('_3042', '_3036'))[['date', 'discharge_3042', 'discharge_3036']]
-    # Объединяем датафреймы с расходами и метеопараметрами
+    # Combine dataframes with discharge and meteorological parameters
     data_full = pd.merge(left=data_partial, right=rivers, how='left', on='date')
-    # instead of using 'snow_cover_station' we shall use 'snowcover'
-    # data_meteo = data_full[['snow_height', 'snowcover',#'snow_coverage_station',
-    #                         'air_temperature', 'relative_humidity',
-    #                         'pressure', 'wind_direction', 'wind_speed_aver',
-    #                         'precipitation']].to_numpy()
-
-    # temps = data_full.air_temperature.to_numpy()
-    # degree_days = temps + lapse * (h_mean - h_st) * 0.01
-    # # temps = data_full.air_temperature.to_numpy()
-    # # degree_days = temps + lapse * (h_mean - h_st) * 0.01
-    # snow_cover = data_full.snowcover.to_numpy()
-    # total_precip = data_full.precipitation.to_numpy()
-
-    # # Модифицируем значения осадков
-    # rainfall = rainfall_convert(total_precip, temps)
-
-    # upstream_discharge = data_full.discharge_3036.to_numpy()
-    # station_discharge = data_full.discharge_3042.to_numpy()
-    # variables = (degree_days[:section_to], snow_cover[:section_to], area, rainfall[:section_to],
-    #              station_discharge[:section_to], upstream_discharge[:section_to])
     dm.get_params_simplified(data_full, gauge_params)
 
     return dm
 
 
 def apply_3045_phys_model(dm, river_dataframe, forecast_intervals = 7, *meteo_dataframes):
-    # meteo_dataframes = meteo_dataframes[0]
     data_partial = meteo_dataframes[0]
     for idx, frame in enumerate(meteo_dataframes[1:]):
         data_partial = pd.merge(left=data_partial, right=frame, how='left', on='date',
@@ -410,48 +355,37 @@ def apply_3045_phys_model(dm, river_dataframe, forecast_intervals = 7, *meteo_da
 
     data_partial = data_partial.interpolate(limit_direction='both')
 
-    # river = pd.read_csv('/home/maslyaev/hton/edn/data/4rd_checkpoint/no_gaps_train.csv', parse_dates=['date'])
     columns = ['date', 'station_id', 'discharge']
     river_3042 = river_dataframe[river_dataframe.station_id == 3042][columns]
     river_3036 = river_dataframe[river_dataframe.station_id == 3036][columns]
-    # Оставляем только значения расходов
+    # Leave only the discharge values
     rivers = pd.merge(left=river_3042, right=river_3036, how='inner',
                       on='date', suffixes=('_3042', '_3036'))[['date', 'discharge_3042', 'discharge_3036']]
-    # Объединяем датафреймы с расходами и метеопараметрами
+    # Combine dataframes with discharge and meteorological parameters
     data_full = pd.merge(left=data_partial, right=rivers, how='left', on='date')
-
-    
-    param_columns = ['snow_height', 'snowcover',#'snow_coverage_station',
-                     'air_temperature', 'relative_humidity',
-                     'pressure', 'wind_direction', 'wind_speed_aver',
-                     'precipitation']
+    param_columns = ['snow_height', 'snowcover', 'air_temperature',
+                     'relative_humidity', 'pressure', 'wind_direction',
+                     'wind_speed_aver', 'precipitation']
     gauge_params = get_const_for_3045()    
     area = gauge_params['area']
-    # section_to = params['section_to']
     lapse = gauge_params['lapse']
     h_mean = gauge_params['h_mean']
     h_st = gauge_params['h_st'] 
     
     forecasts = []
-    # print('shape = ', data_full.shape)
     for slice_idx in np.arange(start = 0, stop = data_full.shape[0], step = forecast_intervals):
         for time_fcast_idx in np.arange(forecast_intervals):
             global_idx = slice_idx + time_fcast_idx
             if global_idx >= data_full.shape[0]:
                 break
-            # print(global_idx, data_full.shape)
-            # print('columns', data_full.columns)
-            meteoparams = [data_full.iloc[global_idx][key] 
-                   for key in param_columns] 
+            meteoparams = [data_full.iloc[global_idx][key] for key in param_columns]
             
             temperature = data_full.iloc[global_idx]['air_temperature']
             degree_days = temperature + lapse * (h_mean - h_st) * 0.01
             snow_cover = data_full.iloc[global_idx]['snowcover']
             total_precip = data_full.iloc[global_idx]['precipitation']
         
-            # Модифицируем значения осадков
-            RAINFALL_EPS = 0.04
-            SNOWCOVER_EPS = 0.2
+            # Modify rainfall values
             ICEMELT_TEMP = 0            
             rainfall = total_precip if temperature > ICEMELT_TEMP else 0
         
@@ -460,8 +394,6 @@ def apply_3045_phys_model(dm, river_dataframe, forecast_intervals = 7, *meteo_da
                 station_discharge = data_full.iloc[global_idx-1]['discharge_3042']           
             else: 
                 station_discharge = forecasts[-1]
-            variables = (degree_days, snow_cover, area, rainfall,
-                          station_discharge, upstream_discharge)
-            # print('meteoparams', meteoparams, 'vars:', variables)
+            variables = (degree_days, snow_cover, area, rainfall, station_discharge, upstream_discharge)
             forecasts.append(dm.predict_1day(variables, meteoparams))   
     return np.array(forecasts)

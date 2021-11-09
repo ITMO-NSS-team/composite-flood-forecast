@@ -2,12 +2,11 @@ import numpy as np
 
 
 def convert_max_into_delta(observed_level, predicted_max):
-    """ Функция переводит предсказанные значения уровня (stage_max) в целевую
-    переменную delta_stage_max
+    """ The function converts the predicted level values (stage_max) to the target delta_stage_max variable
 
-    :param observed_level: значение уровня, которое было известно на начало прогноза
-    :param predicted_max: предсказанные значения уровней на 7 дней вперед
-    :return delta_levels: разница уровней
+    :param observed_level: water level value that was known at the beginning of the forecast
+    :param predicted_max: predicted values of levels for 7 days ahead
+    :return delta_levels: level difference
     """
     shifted = predicted_max[:-1]
     new_arr = np.hstack([np.array(observed_level), shifted])

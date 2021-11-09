@@ -44,11 +44,12 @@ def ensemble_part_metric_calculation(metrics: list, stations_to_check: list = No
                 rainfall_ts = pd.read_csv(PRECIP_4045_PATH,
                                           parse_dates=['date'])
 
+                # Load SRM model and RF model to convert discharge into water levels
                 preloaded_converter = load_converter(CONVERTER_PATH)
-                preloaded_SRM = load_SRM(SRM_PATH)
+                preloaded_srm = load_SRM(SRM_PATH)
                 
                 test_df = prepare_advanced_ensemle_data(ts_df, multi_df, TS_PATH, MULTI_PATH, serialised_model, test_size,
-                                                        preloaded_SRM, preloaded_converter, river_ts, (meteo_ts, snow_ts, rainfall_ts))
+                                                        preloaded_srm, preloaded_converter, river_ts, (meteo_ts, snow_ts, rainfall_ts))
                 test_df = clip_df_to_april_and_jul(test_df)
                 test_features = np.array(test_df[['month', 'day', 'ts', 'multi', 'srm']])
                 test_target = np.array(test_df['actual'])

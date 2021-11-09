@@ -30,12 +30,13 @@ def ensemble_prepare_models(stations_to_prepare: list = None, test_size: int = 8
             meteo_ts = meteo_ts.drop(labels=['precipitation'], axis=1)
             snow_ts = pd.read_csv(SNOWCOVER_4045_PATH, parse_dates=['date'])
             rainfall_ts = pd.read_csv(PRECIP_4045_PATH, parse_dates=['date'])
-        
+
+            # Load SRM model and RF model to convert discharge into water levels
             preloaded_converter = load_converter(CONVERTER_PATH)
-            preloaded_SRM = load_SRM(SRM_PATH)
+            preloaded_srm = load_SRM(SRM_PATH)
 
             init_advanced_ensemble(ts_df, multi_df, TS_PATH, MULTI_PATH, serialised_model, train_len, ensemble_len,
-                                   preloaded_SRM, preloaded_converter, river_ts, meteo_dfs=(meteo_ts, snow_ts, rainfall_ts))
+                                   preloaded_srm, preloaded_converter, river_ts, meteo_dfs=(meteo_ts, snow_ts, rainfall_ts))
         else:
             init_base_ensemble(ts_df, multi_df, TS_PATH, MULTI_PATH, serialised_model, train_len, ensemble_len)
 
