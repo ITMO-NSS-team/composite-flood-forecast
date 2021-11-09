@@ -13,7 +13,7 @@ df = pd.read_csv('../data/level_ts_train.csv', parse_dates=['date'])
 df2 = pd.read_csv('../data/level_time_series.csv', parse_dates=['date'])
 
 forecast_len = 805
-stations = [3019, 3027, 3028, 3029, 3030, 3035, 3041, 3045, 3050, 3230]
+stations = [3045]
 
 NSE = []
 MAE = []
