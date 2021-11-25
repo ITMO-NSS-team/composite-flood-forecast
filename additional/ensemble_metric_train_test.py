@@ -20,8 +20,6 @@ def ensemble_metric_calculation(metrics: list, stations_to_check: list = None, t
 
     # Clip validation part
     validation_len = 805
-    ts_df = clip_last_n_values(ts_df, last_values=validation_len)
-    multi_df = clip_last_n_values(multi_df, last_values=validation_len)
 
     serialised_models = get_list_with_stations_id(stations_to_check)
     # print(serialised_models)
@@ -32,6 +30,11 @@ def ensemble_metric_calculation(metrics: list, stations_to_check: list = None, t
         for serialised_model in serialised_models:
             # Load ensemble model
             model = load_ensemble(SERIALISED_ENSEMBLES_PATH, serialised_model)
+            ts_local = ts_df[ts_df['station_id'] == int(serialised_model)]
+            multi_local = multi_df[multi_df['station_id'] == int(serialised_model)]
+
+            ts_local = clip_last_n_values(ts_local, last_values=validation_len)
+            multi_local = clip_last_n_values(multi_local, last_values=validation_len)
 
             if str(serialised_model) == str(3045):
                 river_ts = pd.read_csv(RIVER4045_PATH, parse_dates=['date'])
@@ -44,15 +47,16 @@ def ensemble_metric_calculation(metrics: list, stations_to_check: list = None, t
                 preloaded_converter = load_converter(CONVERTER_PATH)
                 preloaded_srm = load_SRM(SRM_PATH)
 
-                test_df = prepare_advanced_ensemle_data(ts_df, multi_df, TS_PATH, MULTI_PATH, serialised_model,
-                                                        test_size,
+                test_df = prepare_advanced_ensemle_data(ts_local, multi_local, TS_PATH, MULTI_PATH,
+                                                        serialised_model, test_size,
                                                         preloaded_srm, preloaded_converter, river_ts,
                                                         (meteo_ts, snow_ts, rainfall_ts))
                 test_features = np.array(test_df[['month', 'day', 'ts', 'multi', 'srm']])
                 test_target = np.array(test_df['actual'])
             else:
                 # Prepare data for test
-                test_df = prepare_base_ensemle_data(ts_df, multi_df, TS_PATH, MULTI_PATH, serialised_model, test_size)
+                test_df = prepare_base_ensemle_data(ts_local, multi_local, TS_PATH,
+                                                    MULTI_PATH, serialised_model, test_size)
                 test_features = np.array(test_df[['month', 'day', 'ts', 'multi']])
                 test_target = np.array(test_df['actual'])
 
