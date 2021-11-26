@@ -1,5 +1,10 @@
 import pandas as pd
 import numpy as np
+import seaborn as sns
+
+import matplotlib.pyplot as plt
+from pylab import rcParams
+rcParams['figure.figsize'] = 5, 3
 
 from model.metrics import metric_by_name
 from model.ensemble import prepare_base_ensemle_data, load_ensemble, prepare_advanced_ensemle_data
@@ -23,6 +28,8 @@ def ensemble_metric_calculation(metrics: list, stations_to_check: list = None, t
     for metric in metrics:
         metric_function = metric_by_name[metric]
 
+        metrics_results = []
+        horizons = []
         for horizon in [1, 2, 3, 4, 5, 6, 7]:
             metric_values = []
             for serialised_model in serialised_models:
@@ -32,7 +39,7 @@ def ensemble_metric_calculation(metrics: list, stations_to_check: list = None, t
                 if str(serialised_model) == str(3045):
                     river_ts = pd.read_csv(RIVER4045_PATH, parse_dates=['date'])
                     meteo_ts = get_meteo_df()
-                    meteo_ts = meteo_ts.drop(labels = ['precipitation'], axis = 1)
+                    meteo_ts = meteo_ts.drop(labels=['precipitation'], axis=1)
                     snow_ts = pd.read_csv(SNOWCOVER_4045_PATH, parse_dates=['date'])
                     rainfall_ts = pd.read_csv(PRECIP_4045_PATH, parse_dates=['date'])
 
@@ -59,32 +66,45 @@ def ensemble_metric_calculation(metrics: list, stations_to_check: list = None, t
                                                                  horizon)
                 val_matrix = prepare_horizon_validation_set(test_target, horizon)
 
-                for i in range(0, len(forecast_matrix)):
-                    if horizon > 1:
-                        metric_value = metric_function(val_matrix[i, :],
-                                                       forecast_matrix[i, :])
-                        metric_values.append(metric_value)
-                    else:
-                        if i % 2 != 0:
-                            val_to_check = np.array([val_matrix[i - 1, :], val_matrix[i, :]])
-                            forecast_to_check = np.array([forecast_matrix[i - 1, :], forecast_matrix[i, :]])
+                metric_value = metric_function(val_matrix, forecast_matrix)
+                metric_values.append(metric_value)
 
-                            metric_value = metric_function(np.ravel(val_to_check),
-                                                           np.ravel(forecast_to_check))
-                            metric_values.append(metric_value)
-            metric_values = np.array(metric_values)
+            # Update info about metrics for current horizon
+            metrics_results.extend(metric_values)
+            horizons.extend([horizon] * len(metric_values))
+
+        metric_title = {'nse': 'NSE', 'mae': 'MAE', 'smape': 'SMAPE'}
+        current_metric = metric_title[metric]
+        result_df = pd.DataFrame({current_metric: metrics_results,
+                                  'Forecast horizon': horizons})
+
+        result_df = result_df.astype({current_metric: float,
+                                      'Forecast horizon': str})
+        print(result_df)
+
+        # Plot boxplot
+        if current_metric == 'SMAPE':
+            color = 'white'
+        else:
+            color = 'grey'
+
+        with sns.axes_style("darkgrid"):
+            rcParams['figure.figsize'] = 5, 3
+            sns.boxplot(x='Forecast horizon', y=current_metric, data=result_df,
+                        color=color, width=0.5)
+            plt.show()
 
 
 def prepare_horizon_validation_set(forecast, horizon):
     """ Take only several time series elements by horizon """
     sparsed_forecast = []
     for i in range(0, len(forecast), 7):
-        sparsed_forecast.append(forecast[i:i + horizon])
+        sparsed_forecast.extend(forecast[i:i + horizon])
 
     return np.array(sparsed_forecast)
 
 
 if __name__ == '__main__':
-    ensemble_metric_calculation(metrics=['nse', 'mae', 'smape'],
+    ensemble_metric_calculation(metrics=['nse', 'smape'],
                                 stations_to_check=None,
                                 test_size=805)
